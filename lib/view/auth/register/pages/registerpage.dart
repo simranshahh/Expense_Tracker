@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/view/JsonModels/users.dart';

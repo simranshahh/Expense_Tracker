@@ -217,9 +217,7 @@ class _DataPageState extends State<DataPage> {
                                         children: [
                                           Text(userTransactions[index].toid),
                                           Text(userTransactions[index].remarks),
-                                          Text(DateFormat("yMd").format(
-                                              DateTime.parse(
-                                                  items[index].createdAt))),
+                                          Text(DateFormat("yMd").format(DateTime.parse(items[index].createdAt))),
                                         ],
                                       ), 
                                       Text(
