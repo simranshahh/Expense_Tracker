@@ -1,7 +1,3 @@
-//In here first we create the TransactionModel json model
-// To parse this JSON data, do
-//
-
 class TransactionModel {
   final int? id;
   final int? fromid;
@@ -30,6 +26,7 @@ class TransactionModel {
       );
 
   Map<String, dynamic> toMap() => {
+        "id": id,
         "from_id": fromid,
         "to_id": toid,
         "amount": amount,

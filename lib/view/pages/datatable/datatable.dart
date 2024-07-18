@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unrelated_type_equality_checks, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
@@ -57,19 +57,21 @@ class _DataTablesState extends State<DataTables> {
                   (account) => account.accountId == transaction.fromid,
                   orElse: () => CreateAccountModel(
                       accountName: "account_name",
-                      accountAddress: "account_address"));
+                      accountAddress: "account_address",
+                      accountCategory: 'account_category'));
               final toAccount = accounts.firstWhere(
                   (account) => account.accountId == transaction.toid,
                   orElse: () => CreateAccountModel(
                       accountName: "account_name",
-                      accountAddress: "account_address"));
+                      accountAddress: "account_address",
+                      accountCategory: 'account_category'));
 
               balance += transaction.amount;
 
               return DataRow(
                 cells: [
-                  DataCell(Text(transaction.createdAt ?? 'N/A')),
-                  DataCell(Text(fromAccount.accountCategory ?? 'Unknown')),
+                  DataCell(Text(transaction.createdAt)),
+                  DataCell(Text(fromAccount.accountCategory.toString())),
                   DataCell(transaction.amount >= 0
                       ? Text(transaction.amount.toString())
                       : Text('')),

@@ -18,8 +18,9 @@ class DataPage extends StatefulWidget {
 class _DataPageState extends State<DataPage> {
   late DatabaseHelper handler;
   late Future<List<TransactionModel>> tData;
-  late Future<Object> totalExpenses;
+  Future<Object>? totalExpenses;
   Users? currentUser;
+  TransactionModel? trans;
 
   late Future<List<Users>> udata;
 
@@ -27,22 +28,19 @@ class _DataPageState extends State<DataPage> {
   void initState() {
     super.initState();
     handler = DatabaseHelper();
-    tData = handler.gettransaction();
-    totalExpenses = handler.getTotalExpenses();
 
-    handler.initDB().whenComplete(() {
-      setState(() {
-        fetchCurrentUser();
-        udata = getusertData();
-
-        tData = gettData();
-        totalExpenses = handler.getTotalExpenses();
-      });
+    // Fetch the current user and then fetch other data
+    handler.initDB().whenComplete(() async {
+      await fetchCurrentUser();
+      tData = gettData();
+      totalExpenses = handler.getTotalExpenses();
+      udata = getusertData();
+      setState(() {});
     });
   }
 
   Future<void> fetchCurrentUser() async {
-    currentUser = (await handler.getCurrentUser());
+    currentUser = await handler.getCurrentUser();
   }
 
   Future<List<TransactionModel>> gettData() {
@@ -186,7 +184,7 @@ class _DataPageState extends State<DataPage> {
                         }
 
                         return ListView.builder(
-                            itemCount: items.length,
+                            itemCount: userTransactions.length,
                             itemBuilder: (BuildContext context, index) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -217,15 +215,13 @@ class _DataPageState extends State<DataPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(userTransactions[index]
-                                              .toid
-                                              .toString()),
+                                          Text(userTransactions[index].toid),
                                           Text(userTransactions[index].remarks),
                                           Text(DateFormat("yMd").format(
                                               DateTime.parse(
                                                   items[index].createdAt))),
                                         ],
-                                      ),
+                                      ), 
                                       Text(
                                         userTransactions[index]
                                             .amount
@@ -237,9 +233,7 @@ class _DataPageState extends State<DataPage> {
                                   ),
                                 ),
                               );
-                            }
-                            // },
-                            );
+                            });
                       }
                     }),
               ),

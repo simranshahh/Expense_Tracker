@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myfinance/view/auth/login/pages/loginpage.dart';
 import 'package:myfinance/view/pages/splashscreen.dart';
 
 void main() {

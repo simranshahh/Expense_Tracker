@@ -190,6 +190,7 @@ class _SignUpState extends State<SignUp> {
                                     icon: Icon(isVisible
                                         ? Icons.visibility
                                         : Icons.visibility_off))),
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -215,20 +216,34 @@ class _SignUpState extends State<SignUp> {
                                   usrAddress: address.text,
                                 ))
                                     .whenComplete(() {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginScreen()));
-                                  if (kDebugMode) {
-                                    print(db);
-                                  }
-                                });
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                                if (!mounted) return;
-                                setState(() {
-                                  _isLoading = false;
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                  if (!mounted) return;
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("Signup Successful"),
+                                        content: Text(
+                                            "You have successfully signed up."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginScreen(),
+                                                ),
+                                              );
+                                            },
+                                            child: Text("OK"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 });
                               }
                             },

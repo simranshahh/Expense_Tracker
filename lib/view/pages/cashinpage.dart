@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, avoid_types_as_parameter_names, sized_box_for_whitespace, unused_import, unrelated_type_equality_checks
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, avoid_types_as_parameter_names, sized_box_for_whitespace, unused_import, unrelated_type_equality_checks, body_might_complete_normally_nullable
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
@@ -295,11 +295,27 @@ class _CashInState extends State<CashIn> {
                                         createdAt:
                                             DateTime.now().toIso8601String()))
                                     .whenComplete(() {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Bottomnavbar()));
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Submit'),
+                                          content:
+                                              Text('Submitted Successfully'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Bottomnavbar()));
+                                                },
+                                                child: Text('OK'))
+                                          ],
+                                        );
+                                      });
                                 });
                               }
                             },

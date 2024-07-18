@@ -249,11 +249,27 @@ class _CreateAccountState extends State<CreateAccount> {
                                   ),
                                 )
                                     .whenComplete(() {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Bottomnavbar()));
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Created'),
+                                          content: Text(
+                                              'Account Created Successfully'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Bottomnavbar()));
+                                                },
+                                                child: Text('OK'))
+                                          ],
+                                        );
+                                      });
                                 });
                               }
                             },

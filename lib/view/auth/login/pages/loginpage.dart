@@ -5,6 +5,7 @@ import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/auth/register/pages/registerpage.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
+import 'package:myfinance/view/pages/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,25 +25,53 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final db = DatabaseHelper();
 
+  // login() async {
+
+  //   var response = await db
+  //       .login(Users(usrName: username.text, usrPassword: password.text));
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  //   if (response == true) {
+  //     if (!mounted) return;
+  //     Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => const Bottomnavbar()));
+  //   } else {
+
+  //   }
+  // }
+
   login() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-    var response = await db
+    setState(() {
+      isLoading = true;
+      isLoginTrue = false;
+    });
+
+    bool response = await db
         .login(Users(usrName: username.text, usrPassword: password.text));
+
     setState(() {
       isLoading = false;
     });
-    if (response == true) {
-      if (!mounted) return;
-      Navigator.pushReplacement(
+
+    if (response) {
+      Users? currentUser =
+          await db.getUserByCredentials(username.text, password.text);
+      if (currentUser != null) {
+        if (!mounted) return;
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => const Bottomnavbar()));
+            builder: (BuildContext context) => Bottomnavbar(),
+          ),
+        );
+      }
     } else {
-      // setState(() {
-      //   isLoginTrue = true;
-      // });
+      setState(() {
+        isLoginTrue = true;
+      });
     }
   }
 
@@ -136,11 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    // Future.delayed(Duration(seconds: 3), () {
-                                    //   setState(() {
-                                    //     isLoading = false;
-                                    //   });
-                                    // });
 
                                     login();
                                   }
@@ -152,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           isLoginTrue
                               ? Text(
-                                  'Username or Password is incorrect',
+                                  '',
                                   style: TextStyle(color: Colors.red),
                                 )
                               : SizedBox(),

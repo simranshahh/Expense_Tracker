@@ -34,6 +34,8 @@ class DatabaseHelper {
       List<Map> result = await db
           .rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
       print(result);
+      print(transactioncreate);
+      print(gettransaction);
       await db.execute(users);
       await db.execute(noteTable);
       await db.execute(createaccount);
@@ -83,8 +85,6 @@ class DatabaseHelper {
     return null;
   }
 
- 
-
   //Sign up
   Future<int> signup(Users user) async {
     final Database db = await initDB();
@@ -113,7 +113,10 @@ class DatabaseHelper {
     TransactionModel transaction,
   ) async {
     final Database db = await initDB();
-    return db.insert('auto_transaction', transaction.toMap());
+    return db.insert(
+      'auto_transaction',
+      transaction.toMap(),
+    );
   }
 
   //get transaction

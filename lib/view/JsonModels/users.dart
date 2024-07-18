@@ -2,15 +2,12 @@
 // To parse this JSON data, do
 //
 
-import 'package:myfinance/view/JsonModels/transactionmodel.dart';
-
 class Users {
   final int? usrId;
   final String usrName;
   final String usrPassword;
   final String? usrPhone;
   final String? usrAddress;
-  TransactionModel? transaction;
 
   Users({
     this.usrId,
@@ -18,7 +15,6 @@ class Users {
     required this.usrPassword,
     this.usrPhone,
     this.usrAddress,
-    this.transaction
   });
 
   factory Users.fromMap(Map<String, dynamic> json) => Users(
@@ -27,7 +23,7 @@ class Users {
         usrPassword: json["usrPassword"],
         usrPhone: json["usrPhone"],
         usrAddress: json["usrAddress"],
-        transaction: json["transaction"] == null ? null : TransactionModel.fromMap(json["transaction"]),
+        // transaction: json["transaction"] == null ? null : TransactionModel.fromMap(json["transaction"]),
       );
 
   Map<String, dynamic> toMap() => {

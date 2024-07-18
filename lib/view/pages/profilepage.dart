@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unused_import, prefer_const_constructors_in_immutables, deprecated_member_use, must_call_super, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unused_import, prefer_const_constructors_in_immutables, deprecated_member_use, must_call_super, non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -25,7 +25,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final storage = FlutterSecureStorage();
   late DatabaseHelper handler;
-  Users? currentUser;
+  late Users currentUser;
   late Future<List<Users>> udata;
 
   @override
@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (usrName != null && usrPassword != null) {
       final user = await handler.getUserByCredentials(usrName, usrPassword);
       setState(() {
-        currentUser = user;
+        currentUser = user!;
       });
     }
   }
@@ -125,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-_LdfKGBN5WKAj3hJ9ijYvhROSOe5dBms6ffJz7ckNgKVnmYBtlkASIx9gCchnXQaVBo&usqp=CAU'),
                                     radius: 55,
                                   ),
-                                  Text(currentUser!.usrName ?? '',
+                                  Text(currentUser.usrName.toString(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -133,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             color: ColorConstant.primarydark,
                                             fontWeight: FontWeight.w600,
                                           )),
-                                  Text(currentUser!.usrAddress.toString(),
+                                  Text(currentUser.usrAddress.toString(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!
@@ -230,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Text('Name'),
                                 Text(
-                                  currentUser!.usrName,
+                                  currentUser.usrName,
                                 ),
                               ],
                             ),
@@ -246,7 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Text('Address'),
                                 Text(
-                                  currentUser!.usrAddress ?? '',
+                                  currentUser.usrAddress ?? '',
                                 ),
                               ],
                             ),
@@ -254,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Phone Number'),
-                                Text(currentUser!.usrPhone ?? ''),
+                                Text(currentUser.usrPhone ?? ''),
                               ],
                             ),
                             ElevatedButton(
