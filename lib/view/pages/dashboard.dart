@@ -29,7 +29,6 @@ class _DataPageState extends State<DataPage> {
     super.initState();
     handler = DatabaseHelper();
 
-    // Fetch the current user and then fetch other data
     handler.initDB().whenComplete(() async {
       await fetchCurrentUser();
       tData = gettData();
@@ -217,9 +216,12 @@ class _DataPageState extends State<DataPage> {
                                         children: [
                                           Text(userTransactions[index].toid),
                                           Text(userTransactions[index].remarks),
-                                          Text(DateFormat("yMd").format(DateTime.parse(items[index].createdAt))),
+                                          Text(DateFormat("yMd").format(
+                                              DateTime.parse(items[index]
+                                                  .createdAt
+                                                  .toString()))),
                                         ],
-                                      ), 
+                                      ),
                                       Text(
                                         userTransactions[index]
                                             .amount

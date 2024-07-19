@@ -5,7 +5,7 @@ import 'package:myfinance/view/pages/dashboard.dart';
 import 'package:myfinance/view/pages/inout.dart';
 
 class Bottomnavbar extends StatefulWidget {
-  const Bottomnavbar({super.key});
+   Bottomnavbar({super.key});
 
   @override
   State<Bottomnavbar> createState() => _BottomnavbarState();

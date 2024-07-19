@@ -30,6 +30,15 @@ class _DataTablesState extends State<DataTables> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: Colors.deepPurple,
         title: Center(
           child: Text(
@@ -58,13 +67,13 @@ class _DataTablesState extends State<DataTables> {
                   orElse: () => CreateAccountModel(
                       accountName: "account_name",
                       accountAddress: "account_address",
-                      accountCategory: 'account_category'));
+                      accountCategory: accounts.first.accountCategory));
               final toAccount = accounts.firstWhere(
                   (account) => account.accountId == transaction.toid,
                   orElse: () => CreateAccountModel(
                       accountName: "account_name",
                       accountAddress: "account_address",
-                      accountCategory: 'account_category'));
+                      accountCategory: accounts.first.accountCategory));
 
               balance += transaction.amount;
 

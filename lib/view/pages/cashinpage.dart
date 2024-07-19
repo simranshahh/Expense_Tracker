@@ -287,13 +287,15 @@ class _CashInState extends State<CashIn> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 db
-                                    .transactioncreate(TransactionModel(
-                                        fromid: from.text.toString().length,
-                                        toid: to.text,
-                                        amount: amount.toString().length,
-                                        remarks: remarks.text,
-                                        createdAt:
-                                            DateTime.now().toIso8601String()))
+                                    .transactioncreate(
+                                  TransactionModel(
+                                    fromid: from.text.toString().length,
+                                    toid: to.text,
+                                    amount: amount.toString().length,
+                                    remarks: remarks.text,
+                                    createdAt: DateTime.now().toString(),
+                                  ),
+                                )
                                     .whenComplete(() {
                                   showDialog(
                                       context: context,
