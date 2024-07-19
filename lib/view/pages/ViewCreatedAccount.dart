@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/size_config.dart';
@@ -138,6 +140,7 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
+                                  // ignore: prefer_const_literals_to_create_immutables
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors.grey, blurRadius: 0.1)
@@ -173,7 +176,9 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          DataTables()));
+                                          DataTables(
+                                            category: '',
+                                          )));
                             },
                           ),
                         );

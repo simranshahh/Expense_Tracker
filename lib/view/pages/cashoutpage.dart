@@ -1,349 +1,206 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, avoid_types_as_parameter_names, sized_box_for_whitespace, unused_import, unrelated_type_equality_checks, body_might_complete_normally_nullable
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
-import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
-import 'package:myfinance/view/pages/ViewCreatedAccount.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/inout.dart';
 
-class CashOut extends StatefulWidget {
-  CashOut({super.key});
+class CashInOrOut extends StatefulWidget {
+  final bool isCashIn;
+
+  const CashInOrOut({Key? key, required this.isCashIn}) : super(key: key);
 
   @override
-  State<CashOut> createState() => _CashOutState();
+  State<CashInOrOut> createState() => _CashInOrOutState();
 }
 
-List<String> fromdropdown = <String>[];
-List<String> todropdown = <String>[];
-String? fromselectedcategory;
-
-late final CreateAccountModel user;
-
-final from = TextEditingController();
-final to = TextEditingController();
-final amount = TextEditingController();
-final db = DatabaseHelper();
-final remarks = TextEditingController();
-
-class _CashOutState extends State<CashOut> {
+class _CashInOrOutState extends State<CashInOrOut> {
   final formKey = GlobalKey<FormState>();
-  late DatabaseHelper handler;
-  late Future<List<CreateAccountModel>> adata;
+  final TextEditingController _fromController = TextEditingController();
+  final TextEditingController _toController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _remarksController = TextEditingController();
+  late DatabaseHelper _dbHelper;
+  late Future<List<CreateAccountModel>> _accountsFuture;
+
+  List<String> _fromDropdown = [];
+  List<String> _toDropdown = [];
 
   @override
   void initState() {
-    _fetchAccountNames();
-    _fetchAccountName();
-    handler = DatabaseHelper();
-    adata = handler.getaccount();
-
-    handler.initDB().whenComplete(() {
-      adata = getadata();
-    });
-
     super.initState();
-  }
-
-  Future<List<CreateAccountModel>> getadata() {
-    return handler.getaccount();
+    _dbHelper = DatabaseHelper();
+    _accountsFuture = _dbHelper.getaccount();
+    _fetchAccountNames();
   }
 
   Future<void> _fetchAccountNames() async {
-    final dbHelper = DatabaseHelper();
-    List<CreateAccountModel> accounts = await dbHelper.getaccount();
+    List<CreateAccountModel> accounts = await _accountsFuture;
     setState(() {
-      fromdropdown.clear();
-      fromdropdown.addAll(accounts.map((account) => account.accountName));
-    });
-  }
-
-  Future<void> _fetchAccountName() async {
-    final dbHelper = DatabaseHelper();
-    List<CreateAccountModel> accounts = await dbHelper.getaccount();
-    setState(() {
-      todropdown.clear();
-      todropdown.addAll(accounts.map((account) => account.accountName));
+      _fromDropdown = accounts.map((account) => account.accountName).toList();
+      _toDropdown = accounts.map((account) => account.accountName).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      body: Stack(children: [
-        Container(
-          height: displayHeight(context) * 0.35,
-          width: displayWidth(context),
-          decoration: BoxDecoration(
-              color: Colors.deepPurple,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50))),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 18),
-                child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext) => INOUT()));
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 30.0, top: 30),
-                child: Text(
-                  'CASH IN',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              )
-            ],
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            widget.isCashIn ? 'Add Cash In' : 'Add Cash Out',
+            style: TextStyle(color: Colors.white),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 95.0),
-            child: Container(
-              height: displayHeight(context),
-              width: displayWidth(context),
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(color: Colors.grey, blurRadius: 1, spreadRadius: 0.1)
-              ], borderRadius: BorderRadius.circular(30), color: Colors.white),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'From',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Container(
-                              height: displayHeight(context) * 0.08,
-                              width: displayWidth(context) * 0.6,
-                              margin: const EdgeInsets.all(8),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.deepPurple.withOpacity(.2)),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: from,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Name is required";
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  icon: Icon(Icons.person),
-                                  border: InputBorder.none,
-                                  hintText: "From",
-                                ),
-                                onTap: () {
-                                  _showOptions(context);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'To    ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Container(
-                              height: displayHeight(context) * 0.09,
-                              width: displayWidth(context) * 0.6,
-                              margin: const EdgeInsets.all(8),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.deepPurple.withOpacity(.2)),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: to,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Name is required";
-                                  } else {
-                                    if (to.text == from.text) {
-                                      return "Value is not accepted";
-                                    }
-                                  }
-                                  return null;
-                                },
-                                decoration: const InputDecoration(
-                                  icon: Icon(Icons.person),
-                                  border: InputBorder.none,
-                                  hintText: "Name",
-                                ),
-                                onTap: () {
-                                  to_options(context);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Rs.   ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Container(
-                              height: displayHeight(context) * 0.08,
-                              width: displayWidth(context) * 0.6,
-                              margin: const EdgeInsets.all(8),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.deepPurple.withOpacity(.2)),
-                              child: TextFormField(
-                                controller: amount,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "amount is required";
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return "Please enter a valid number";
-                                  }
-                                  return null;
-                                },
-                                decoration: const InputDecoration(
-                                  icon: Icon(Icons.person),
-                                  border: InputBorder.none,
-                                  hintText: "Amount",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Not   ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Container(
-                              height: displayHeight(context) * 0.08,
-                              width: displayWidth(context) * 0.6,
-                              margin: const EdgeInsets.all(8),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.deepPurple.withOpacity(.2)),
-                              child: TextFormField(
-                                controller: remarks,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Name is required";
-                                  }
-                                  return null;
-                                },
-                                decoration: const InputDecoration(
-                                  icon: Icon(Icons.person),
-                                  border: InputBorder.none,
-                                  hintText: "Remarks",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                db
-                                    .transactioncreate(
-                                  TransactionModel(
-                                    fromid: from.text.toString().length,
-                                    toid: to.text,
-                                    amount: double.parse(amount.text)
-                                        .toDouble()
-                                        .toString()
-                                        .length,
-                                    remarks: remarks.text,
-                                    createdAt: DateTime.now().toString(),
-                                  ),
-                                )
-                                    .whenComplete(() {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Submit'),
-                                          content:
-                                              Text('Submitted Successfully'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              Bottomnavbar()));
-                                                },
-                                                child: Text('OK'))
-                                          ],
-                                        );
-                                      });
-                                });
-                              }
-                            },
-                            child: Text('SUBMIT')),
-                        SizedBox(
-                          height: 200,
-                        ),
-                      ],
-                    ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildDropdownField(
+                    label: 'From       ',
+                    controller: _fromController,
+                    options: _fromDropdown,
                   ),
-                ),
+                  _buildDropdownField(
+                    label: 'To           ',
+                    controller: _toController,
+                    options: _toDropdown,
+                  ),
+                  _buildTextField(
+                    label: 'Amount  ',
+                    controller: _amountController,
+                    prefixText: widget.isCashIn ? '+' : '-',
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Amount is required';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
+                  ),
+                  _buildTextField(
+                    label: 'Remarks ',
+                    controller: _remarksController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Remarks are required';
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.text,
+                    prefixText: '',
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _handleSubmit,
+                    child: Text('Submit'),
+                  ),
+                ],
               ),
             ),
           ),
-        )
-      ]),
-    ));
+        ),
+      ),
+    );
   }
 
-  void _showOptions(BuildContext context) {
+  Widget _buildDropdownField({
+    required String label,
+    required TextEditingController controller,
+    required List<String> options,
+  }) {
+    return Row(
+      children: [
+        Text(
+          '$label:',
+          style: TextStyle(fontSize: 18),
+        ),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.deepPurple.withOpacity(0.2),
+            ),
+            child: TextFormField(
+              readOnly: true,
+              controller: controller,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return '$label is required';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                icon: Icon(Icons.person),
+                border: InputBorder.none,
+                hintText: label,
+              ),
+              onTap: () => _showOptions(context, options, controller),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required String prefixText,
+    required TextInputType keyboardType,
+    FormFieldValidator<String>? validator,
+  }) {
+    return Row(
+      children: [
+        Text(
+          '$label:',
+          style: TextStyle(fontSize: 18),
+        ),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.deepPurple.withOpacity(0.2),
+            ),
+            child: TextFormField(
+              controller: controller,
+              keyboardType: keyboardType,
+              validator: validator,
+              decoration: InputDecoration(
+                // icon: Icon(Icons.money),
+                border: InputBorder.none,
+                hintText: label,
+                prefixText: prefixText,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showOptions(BuildContext context, List<String> options,
+      TextEditingController controller) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -353,13 +210,13 @@ class _CashOutState extends State<CashOut> {
             width: double.maxFinite,
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: fromdropdown.length,
+              itemCount: options.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(fromdropdown[index]),
+                  title: Text(options[index]),
                   onTap: () {
                     setState(() {
-                      from.text = fromdropdown[index];
+                      controller.text = options[index];
                     });
                     Navigator.pop(context);
                   },
@@ -372,32 +229,47 @@ class _CashOutState extends State<CashOut> {
     );
   }
 
-  void to_options(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select an Option'),
-          content: Container(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: todropdown.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(todropdown[index]),
-                  onTap: () {
-                    setState(() {
-                      to.text = todropdown[index];
-                    });
-                    Navigator.pop(context);
+  void _handleSubmit() {
+    if (formKey.currentState!.validate()) {
+      // Parse the amount from the controller as a double
+      final double parsedAmount = double.parse(_amountController.text);
+
+      // Convert the double to int based on whether it's cash-in or cash-out
+      final int amount =
+          widget.isCashIn ? parsedAmount.round() : (-parsedAmount).round();
+
+      final transaction = TransactionModel(
+        fromid: _fromController.text.toString().length,
+        toid: _toController.text,
+        amount: amount, // Use the converted int value here
+        remarks: _remarksController.text,
+        createdAt: DateTime.now().toString(),
+      );
+
+      _dbHelper.transactioncreate(transaction).whenComplete(() {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Submit'),
+              content: Text('Submitted Successfully'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => Bottomnavbar(),
+                      ),
+                    );
                   },
-                );
-              },
-            ),
-          ),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
         );
-      },
-    );
+      });
+    }
   }
 }
