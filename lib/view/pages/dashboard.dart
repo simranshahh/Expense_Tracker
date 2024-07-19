@@ -17,7 +17,7 @@ class DataPage extends StatefulWidget {
 
 class _DataPageState extends State<DataPage> {
   late DatabaseHelper handler;
-  late Future<List<TransactionModel>> tData;
+  Future<List<TransactionModel>>? tData;
   Future<Object>? totalExpenses;
   Users? currentUser;
   TransactionModel? trans;

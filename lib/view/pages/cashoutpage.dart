@@ -9,11 +9,11 @@ import 'package:myfinance/view/pages/ViewCreatedAccount.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
 import 'package:myfinance/view/pages/inout.dart';
 
-class CashIn extends StatefulWidget {
-  CashIn({super.key});
+class CashOut extends StatefulWidget {
+  CashOut({super.key});
 
   @override
-  State<CashIn> createState() => _CashInState();
+  State<CashOut> createState() => _CashOutState();
 }
 
 List<String> fromdropdown = <String>[];
@@ -28,7 +28,7 @@ final amount = TextEditingController();
 final db = DatabaseHelper();
 final remarks = TextEditingController();
 
-class _CashInState extends State<CashIn> {
+class _CashOutState extends State<CashOut> {
   final formKey = GlobalKey<FormState>();
   late DatabaseHelper handler;
   late Future<List<CreateAccountModel>> adata;

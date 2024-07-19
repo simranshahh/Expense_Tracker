@@ -1,4 +1,4 @@
-class  TransactionModel {
+class TransactionModel {
   final int? id;
   final int? fromid;
   final String toid;

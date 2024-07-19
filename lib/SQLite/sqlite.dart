@@ -225,11 +225,19 @@ class DatabaseHelper {
   }
 
   //sort dropdown
-  Future<List<String>> getSortedCategories() async {
+  // Future<List<String>> getSortedCategories() async {
+  //   final db = await initDB();
+  //   final List<Map<String, dynamic>> result = await db.rawQuery(
+  //       'SELECT * FROM auto_account WHERE account_category = "Debitor"');
+  //   return result.map((item) => item['account_category'] as String).toList();
+  // }
+
+  Future<List<CreateAccountModel>> getAccountsByCategory(
+      String category) async {
     final db = await initDB();
     final List<Map<String, dynamic>> result = await db.rawQuery(
-        'SELECT * FROM auto_account WHERE account_category = "Debitor"');
-    return result.map((item) => item['account_category'] as String).toList();
+        'SELECT * FROM auto_account WHERE account_category = ?', [category]);
+    return result.map((item) => CreateAccountModel.fromMap(item)).toList();
   }
 
   Future<Object> getTotalExpenses() async {
