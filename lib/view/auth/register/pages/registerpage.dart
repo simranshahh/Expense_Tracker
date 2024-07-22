@@ -28,6 +28,29 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar:AppBar(
+      //       toolbarHeight: 80,
+      //       backgroundColor: Colors.deepPurple,
+      //       shape: RoundedRectangleBorder(
+      //           borderRadius: BorderRadius.vertical(
+      //         bottom: Radius.circular(45),
+      //       )),
+      //       leading: Icon(
+      //         Icons.more_vert,
+      //         color: Colors.white,
+      //       ),
+      //       title: Center(
+      //         child: Text(
+      //           'DASHBOARD',
+      //           style: TextStyle(
+      //               color: Colors.white,
+      //               fontWeight: FontWeight.bold,
+      //               fontSize: 25),
+      //         ),
+      //       ),
+
+      //     ),
+
       body: Center(
         child: SingleChildScrollView(
           child: Form(

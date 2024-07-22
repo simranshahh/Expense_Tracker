@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/utils/size_config.dart';

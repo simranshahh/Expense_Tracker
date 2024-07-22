@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, duplicate_ignore
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';

@@ -55,7 +55,12 @@ class _DataPageState extends State<DataPage> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
+            toolbarHeight: 80,
             backgroundColor: Colors.deepPurple,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(45),
+            )),
             leading: Icon(
               Icons.more_vert,
               color: Colors.white,
@@ -94,7 +99,7 @@ class _DataPageState extends State<DataPage> {
                 children: [],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: .0),
                 child: FutureBuilder<Object>(
                   future: totalExpenses,
                   builder: (context, snapshot) {
@@ -128,8 +133,10 @@ class _DataPageState extends State<DataPage> {
                           children: [
                             Text(
                               'Total Expenses',
-                              style:
-                                  TextStyle(fontSize: 22, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Text(
                               '\$${snapshot.data}',
@@ -152,10 +159,15 @@ class _DataPageState extends State<DataPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('All Expenses'),
+                  Text(
+                    'All Expenses',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Text(
                     'View All',
-                    style: TextStyle(decoration: TextDecoration.underline),
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -196,7 +208,8 @@ class _DataPageState extends State<DataPage> {
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
-                                            color: Colors.grey, blurRadius: 0.1)
+                                            color: Colors.deepPurple,
+                                            blurRadius: 0.1)
                                       ]),
                                   child: Row(
                                     mainAxisAlignment:
@@ -214,8 +227,18 @@ class _DataPageState extends State<DataPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(userTransactions[index].toid),
-                                          Text(userTransactions[index].remarks),
+                                          Text(
+                                            userTransactions[index].toid,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                                color: Colors.deepPurple),
+                                          ),
+                                          Text(
+                                            userTransactions[index].remarks,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                           Text(DateFormat("yMd").format(
                                               DateTime.parse(items[index]
                                                   .createdAt
@@ -226,8 +249,7 @@ class _DataPageState extends State<DataPage> {
                                         userTransactions[index]
                                             .amount
                                             .toString(),
-                                        style:
-                                            TextStyle(color: Colors.deepPurple),
+                                        style: TextStyle(color: Colors.black),
                                       )
                                     ],
                                   ),

@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:myfinance/view/JsonModels/createaccount.dart';
+import 'package:myfinance/view/JsonModels/profilepicturemodel.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:path/path.dart';
@@ -27,6 +28,9 @@ class DatabaseHelper {
   String transactionTable =
       "create table auto_transaction (id INTEGER PRIMARY KEY AUTOINCREMENT, from_id INTEGER, to_id INTEGER, amount NUMERIC DECIMAL(10,3), remarks TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, CONSTRAINT from_id_account_fkey FOREIGN KEY (from_id) REFERENCES auto_account(account_id),  CONSTRAINT to_id_account_fkey FOREIGN KEY (to_id) REFERENCES auto_account(account_id))";
 
+  String pictureTable =
+      "create table picture_Table (photoId INTEGER PRIMARY KEY, pImage BLOB)";
+
   final storage = FlutterSecureStorage();
 
   Future<Database> initDB() async {
@@ -46,6 +50,7 @@ class DatabaseHelper {
       await db.execute(noteTable);
       await db.execute(createaccount);
       await db.execute(transactionTable);
+      await db.execute(pictureTable);
       await requestPermissions();
       await backupDatabase();
       await copyDatabaseToExternalStorage();
@@ -199,6 +204,21 @@ class DatabaseHelper {
     return result.map((e) => CreateAccountModel.fromMap(e)).toList();
   }
 
+  Future<int> insertProfilePicture(ProfilepictureModel profilePicture) async {
+    var dbClient = await initDB();
+    return await dbClient.insert('picture_Table', profilePicture.toMap());
+  }
+
+  Future<ProfilepictureModel?> getProfilePicture(String photoId) async {
+    var dbClient = await initDB();
+    var result = await dbClient
+        .query('picture_Table', where: 'photoId = ?', whereArgs: [photoId]);
+    if (result.isNotEmpty) {
+      return ProfilepictureModel.fromMap(result.first);
+    }
+    return null;
+  }
+
   //create transaction
   Future<int> transactioncreate(
     TransactionModel transaction,
@@ -223,14 +243,6 @@ class DatabaseHelper {
     List<Map<String, Object?>> result = await db.query('users');
     return result.map((e) => Users.fromMap(e)).toList();
   }
-
-  //sort dropdown
-  // Future<List<String>> getSortedCategories() async {
-  //   final db = await initDB();
-  //   final List<Map<String, dynamic>> result = await db.rawQuery(
-  //       'SELECT * FROM auto_account WHERE account_category = "Debitor"');
-  //   return result.map((item) => item['account_category'] as String).toList();
-  // }
 
   Future<List<CreateAccountModel>> getAccountsByCategory(
       String category) async {
