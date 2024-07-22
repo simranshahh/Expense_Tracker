@@ -223,7 +223,7 @@ class _YourProfileState extends State<YourProfile> {
                                       child: Image.network(
                                         scale: 2,
                                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIaNyYUpGuv8dBcJLV5CQlVhd1twQpewSIQ&s',
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
                                   ),

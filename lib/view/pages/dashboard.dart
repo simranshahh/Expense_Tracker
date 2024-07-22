@@ -20,8 +20,6 @@ class _DataPageState extends State<DataPage> {
   Future<List<TransactionModel>>? tData;
   Future<Object>? totalExpenses;
   Users? currentUser;
-  TransactionModel? trans;
-
   late Future<List<Users>> udata;
 
   @override
@@ -94,12 +92,8 @@ class _DataPageState extends State<DataPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [],
-              ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: .0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: FutureBuilder<Object>(
                   future: totalExpenses,
                   builder: (context, snapshot) {

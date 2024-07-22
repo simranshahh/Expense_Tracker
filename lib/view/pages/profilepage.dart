@@ -204,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   width: 90,
                                   height: 90,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Colors.white.withOpacity(0.0001),
                                     borderRadius: BorderRadius.circular(35),
                                   ),
                                   child: Center(
@@ -307,7 +307,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   height: displayHeight(context) * 0.02,
                                 ),
                                 SizedBox(
-                                  width: displayWidth(context) *  0.9,
+                                  width: displayWidth(context) * 0.9,
                                   height: 40,
                                   child: TextButton(
                                     onPressed: () {
