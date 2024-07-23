@@ -1,7 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unused_import, prefer_const_constructors_in_immutables, deprecated_member_use, must_call_super, non_constant_identifier_names, use_build_context_synchronously, unused_field, unnecessary_null_comparison, unused_element, must_be_immutable
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,9 +11,7 @@ import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/profilepicturemodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/auth/login/pages/loginpage.dart';
-import 'package:myfinance/view/pages/ViewCreatedAccount.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/createaccount.dart';
 
 class YourProfile extends StatefulWidget {
   final Users? users;
@@ -37,9 +35,8 @@ class _YourProfileState extends State<YourProfile> {
   @override
   void initState() {
     super.initState();
-    _loadUserCredentials();
     handler = DatabaseHelper();
-
+    _loadUserCredentials();
     udata = handler.getUsers();
 
     handler.initDB().whenComplete(() {
@@ -59,7 +56,7 @@ class _YourProfileState extends State<YourProfile> {
     if (usrName != null && usrPassword != null) {
       final user = await handler.getUserByCredentials(usrName, usrPassword);
       setState(() {
-        currentUser = user!;
+        currentUser = user;
       });
     }
   }
@@ -86,14 +83,60 @@ class _YourProfileState extends State<YourProfile> {
           _imageBytes = imageBytes;
         });
 
-        // Insert image into database
         ProfilepictureModel profilePicture = ProfilepictureModel(
             photoId: currentUser!.usrId.toString(), PImage: imageBytes);
         await handler.insertProfilePicture(profilePicture);
       }
     } catch (e) {
-      // ignore: avoid_print
       print('Error picking image: $e');
+    }
+  }
+
+  Future<void> _showEditDialog(
+      String label, String initialValue, Function(String) onSave) async {
+    TextEditingController controller =
+        TextEditingController(text: initialValue);
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit $label'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                onSave(controller.text);
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _updateUserInfo(
+      String name, String address, String phone) async {
+    if (currentUser != null) {
+      await handler.updateDetails(currentUser!.usrId, name, address, phone);
+      final updatedUser =
+          await handler.getUserById(currentUser!.usrId.toString().length);
+      setState(() {
+        currentUser = updatedUser;
+      });
     }
   }
 
@@ -106,14 +149,12 @@ class _YourProfileState extends State<YourProfile> {
           future: udata,
           builder: (BuildContext context, AsyncSnapshot<List<Users>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return const Center(child: Text("No data"));
+              return Center(child: Text("No data"));
             } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
+              return Center(child: Text(snapshot.error.toString()));
             } else {
-              final items = snapshot.data ?? <Users>[];
-
               return Stack(
                 children: [
                   Container(
@@ -199,34 +240,27 @@ class _YourProfileState extends State<YourProfile> {
                           children: [
                             Column(
                               children: [
-                                if (_imageBytes != null)
-                                  Container(
-                                    height: 100,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(35),
-                                      image: DecorationImage(
-                                        image: MemoryImage(_imageBytes!),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(35),
-                                    ),
-                                    child: Center(
-                                      child: Image.network(
-                                        scale: 2,
-                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIaNyYUpGuv8dBcJLV5CQlVhd1twQpewSIQ&s',
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
+                                Container(
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    shape: BoxShape.circle,
                                   ),
+                                  child: _imageBytes != null
+                                      ? CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage:
+                                              MemoryImage(_imageBytes!),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: NetworkImage(
+                                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIaNyYUpGuv8dBcJLV5CQlVhd1twQpewSIQ&s',
+                                          ),
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                ),
                                 if (currentUser != null) ...[
                                   Text(currentUser!.usrName.toString(),
                                       style: Theme.of(context)
@@ -271,124 +305,59 @@ class _YourProfileState extends State<YourProfile> {
                   ),
                   if (currentUser != null)
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 220, left: 30, right: 30),
+                      padding: EdgeInsets.only(top: 220, left: 30, right: 30),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Name',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              Container(
-                                height: 55,
-                                width: displayWidth(context),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        currentUser!.usrName,
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.edit))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          _buildProfileInfo(
+                            'Name',
+                            currentUser!.usrName,
+                            (newValue) {
+                              _updateUserInfo(
+                                newValue,
+                                currentUser!.usrAddress ?? '',
+                                currentUser!.usrPhone ?? '',
+                              );
+                            },
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Address',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              Container(
-                                height: 55,
-                                width: displayWidth(context),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        currentUser!.usrAddress ?? '',
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.edit))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          _buildProfileInfo(
+                            'Address',
+                            currentUser!.usrAddress ?? '',
+                            (newValue) {
+                              _updateUserInfo(
+                                currentUser!.usrName,
+                                newValue,
+                                currentUser!.usrPhone ?? '',
+                              );
+                            },
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Phone Number',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              Container(
-                                height: 55,
-                                width: displayWidth(context),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        currentUser!.usrPhone ?? '',
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.edit))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          _buildProfileInfo(
+                            'Phone Number',
+                            currentUser!.usrPhone ?? '',
+                            (newValue) {
+                              _updateUserInfo(
+                                currentUser!.usrName,
+                                currentUser!.usrAddress ?? '',
+                                newValue,
+                              );
+                            },
                           ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                await storage.deleteAll();
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          LoginScreen()),
-                                );
-                              },
-                              child: Text('Save'))
+                          // ElevatedButton(
+                          //   onPressed: () async {
+                          //     await storage.deleteAll();
+                          //     Navigator.pushReplacement(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             LoginScreen(),
+                          //       ),
+                          //     );
+                          //   },
+                          //   child: Text('Save'),
+                          // ),
+                          Container(
+                            height: 100,
+                          ),
                         ],
                       ),
                     ),
@@ -399,36 +368,78 @@ class _YourProfileState extends State<YourProfile> {
                       Padding(
                         padding: const EdgeInsets.only(top: 130.0, left: 75),
                         child: Container(
-                            height: 25,
-                            width: 25,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            child: Center(
-                              child: IconButton(
-                                onPressed: () {
-                                  _pickAndInsertImage();
-                                },
-                                icon: Icon(
-                                  Icons.camera,
-                                  color: Colors.white,
-                                  size: 12,
-                                ),
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(35),
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () {
+                                _pickAndInsertImage();
+                              },
+                              icon: Icon(
+                                Icons.camera,
+                                color: Colors.white,
+                                size: 12,
                               ),
-                            )),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 80,
-                  )
                 ],
               );
             }
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildProfileInfo(
+      String label, String value, Function(String) onSave) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        Container(
+          height: 55,
+          width: displayWidth(context),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.deepPurple.withOpacity(0.2),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 16,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _showEditDialog(label, value, onSave);
+                  },
+                  icon: Icon(Icons.verified_user),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

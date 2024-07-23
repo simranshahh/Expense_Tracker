@@ -2,6 +2,8 @@
 // To parse this JSON data, do
 //
 
+// ignore_for_file: body_might_complete_normally_nullable
+
 class Users {
   final int? usrId;
   final String usrName;
@@ -33,4 +35,9 @@ class Users {
         "usrPhone": usrPhone,
         "usrAddress": usrAddress,
       };
+
+  Users? copywith(
+      {required String usrName,
+      required String usrAddress,
+      required String usrPhone}) {}
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -52,46 +52,51 @@ class _DataPageState extends State<DataPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 80,
-            backgroundColor: Colors.deepPurple,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(45),
-            )),
-            leading: Icon(
-              Icons.more_vert,
-              color: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: Colors.deepPurple,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(25),
             ),
-            title: Center(
-              child: Text(
-                'DASHBOARD',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25),
+          ),
+          leading: Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          title: Center(
+            child: Text(
+              'DASHBOARD',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
               ),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.manage_accounts,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => ProfilePage()));
-                },
-              )
-            ],
           ),
-          backgroundColor: Colors.white,
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.account_circle,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ProfilePage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: FutureBuilder<Object>(
@@ -119,25 +124,28 @@ class _DataPageState extends State<DataPage> {
                         height: 100,
                         width: displayWidth(context),
                         decoration: BoxDecoration(
-                            color: Colors.deepPurple,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey)),
+                          color: Colors.deepPurple,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
                               'Total Expenses',
                               style: TextStyle(
-                                  fontSize: 22,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                                fontSize: 22,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
-                              '\$${snapshot.data}',
+                              '${snapshot.data}',
                               style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -147,7 +155,7 @@ class _DataPageState extends State<DataPage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -155,106 +163,137 @@ class _DataPageState extends State<DataPage> {
                 children: [
                   Text(
                     'All Expenses',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'View All',
                     style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to the detailed expenses page
+                    },
+                    child: Text(
+                      'View All',
+                      style: TextStyle(
                         decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
                   ),
                 ],
               ),
+              SizedBox(height: 10),
               Expanded(
                 child: FutureBuilder<List<TransactionModel>>(
-                    future: tData,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<TransactionModel>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                        return const Center(child: Text("No data"));
-                      } else if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
-                      } else {
-                        final items = snapshot.data ?? <TransactionModel>[];
-                        final userTransactions = items
-                            .where((transaction) =>
-                                transaction.fromid == currentUser?.usrId)
-                            .toList();
+                  future: tData,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<TransactionModel>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return Center(child: Text("No data"));
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      final items = snapshot.data ?? <TransactionModel>[];
+                      final userTransactions = items
+                          .where((transaction) =>
+                              transaction.fromid == currentUser?.usrId)
+                          .toList();
 
-                        if (userTransactions.isEmpty) {
-                          return Center(
-                              child: Text("No transactions for current user."));
-                        }
+                      if (userTransactions.isEmpty) {
+                        return Center(
+                            child: Text("No transactions for current user."));
+                      }
 
-                        return ListView.builder(
-                            itemCount: userTransactions.length,
-                            itemBuilder: (BuildContext context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 5),
-                                child: Container(
-                                  height: displayHeight(context) * 0.15,
-                                  width: displayWidth(context),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.deepPurple,
-                                            blurRadius: 0.1)
-                                      ]),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage: NetworkImage(
-                                          'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                                        ),
+                      return ListView.builder(
+                        itemCount: userTransactions.length,
+                        itemBuilder: (BuildContext context, index) {
+                          final transaction = userTransactions[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5.0, horizontal: 12.0),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 8,
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor:
+                                          Colors.deepPurple.withOpacity(0.2),
+                                      child: Icon(
+                                        Icons.monetization_on,
+                                        size: 30,
+                                        color: Colors.deepPurple,
                                       ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                    ),
+                                    SizedBox(width: 15),
+                                    Expanded(
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            userTransactions[index].toid,
+                                            transaction.toid,
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                                color: Colors.deepPurple),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.deepPurple,
+                                            ),
                                           ),
+                                          SizedBox(height: 4),
                                           Text(
-                                            userTransactions[index].remarks,
+                                            transaction.remarks,
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                              color: Colors.grey[600],
+                                              fontSize: 14,
+                                            ),
                                           ),
-                                          Text(DateFormat("yMd").format(
-                                              DateTime.parse(items[index]
+                                          SizedBox(height: 4),
+                                          Text(
+                                            DateFormat("yMd").format(
+                                              DateTime.parse(transaction
                                                   .createdAt
-                                                  .toString()))),
+                                                  .toString()),
+                                            ),
+                                            style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontSize: 12,
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      Text(
-                                        userTransactions[index]
-                                            .amount
-                                            .toString(),
-                                        style: TextStyle(color: Colors.black),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      '${transaction.amount.toStringAsFixed(2)}', // Removed $ sign
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            });
-                      }
-                    }),
-              ),
-            ]),
-          )),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

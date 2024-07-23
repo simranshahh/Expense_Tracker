@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unused_element
+// ignore_for_file: prefer_const_constructors, unused_element, deprecated_member_use, use_build_context_synchronously
 
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -87,7 +87,6 @@ class _ProfilePageState extends State<ProfilePage> {
           _imageBytes = imageBytes;
         });
 
-        // Insert image into database
         ProfilepictureModel profilePicture = ProfilepictureModel(
             photoId: currentUser!.usrId.toString(), PImage: imageBytes);
         await handler.insertProfilePicture(profilePicture);
@@ -204,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   width: 90,
                                   height: 90,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.0001),
+                                    color: Colors.white.withOpacity(0.001),
                                     borderRadius: BorderRadius.circular(35),
                                   ),
                                   child: Center(
@@ -246,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       horizontal: 0.0),
                                   child: SizedBox(
                                     width: displayWidth(context) * 0.9,
-                                    height: 40,
+                                    height: displayHeight(context) * 0.075,
                                     child: TextButton(
                                       onPressed: () {
                                         Navigator.push(
@@ -277,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 SizedBox(
                                   width: displayWidth(context) * 0.9,
-                                  height: 40,
+                                  height: displayHeight(context) * 0.075,
                                   child: TextButton(
                                     onPressed: () {
                                       Navigator.push(
@@ -308,7 +307,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 SizedBox(
                                   width: displayWidth(context) * 0.9,
-                                  height: 40,
+                                  height: displayHeight(context) * 0.075,
                                   child: TextButton(
                                     onPressed: () {
                                       Navigator.push(
@@ -338,6 +337,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
+                        Container(
+                          height: 50,
+                        )
                       ],
                     ),
                   ),

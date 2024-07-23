@@ -1,11 +1,10 @@
-// ignore_for_file: unused_import, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/auth/register/pages/registerpage.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,29 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final password = TextEditingController();
 
   bool isVisible = false;
-
   bool isLoginTrue = false;
   bool isLoading = false;
 
   final db = DatabaseHelper();
-
-  // login() async {
-
-  //   var response = await db
-  //       .login(Users(usrName: username.text, usrPassword: password.text));
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   if (response == true) {
-  //     if (!mounted) return;
-  //     Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (BuildContext context) => const Bottomnavbar()));
-  //   } else {
-
-  //   }
-  // }
 
   login() async {
     setState(() {
@@ -76,138 +56,203 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: isLoading
-                  ? CircularProgressIndicator()
-                  : Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            "assets/login.png",
-                            width: 210,
-                          ),
-                          const SizedBox(height: 15),
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.deepPurple.withOpacity(.2)),
-                            child: TextFormField(
-                              controller: username,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "username is required";
-                                }
-                                return null;
-                              },
-                              decoration: const InputDecoration(
-                                icon: Icon(Icons.person),
-                                border: InputBorder.none,
-                                hintText: "Username",
-                              ),
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.deepPurple.withOpacity(.2)),
-                            child: TextFormField(
-                              controller: password,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "password is required";
-                                }
-                                return null;
-                              },
-                              obscureText: !isVisible,
-                              decoration: InputDecoration(
-                                  icon: const Icon(Icons.lock),
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isVisible = !isVisible;
-                                        });
-                                      },
-                                      icon: Icon(isVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off))),
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-                          Container(
-                            height: 55,
-                            width: MediaQuery.of(context).size.width * .9,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.deepPurple),
-                            child: TextButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-
-                                    login();
-                                  }
-                                },
-                                child: const Text(
-                                  "LOGIN",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ),
-                          isLoginTrue
-                              ? Text(
-                                  '',
-                                  style: TextStyle(color: Colors.red),
-                                )
-                              : SizedBox(),
-
-                          //Sign up button
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("Don't have an account?"),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SignUp()));
-                                  },
-                                  child: const Text("SIGN UP"))
-                            ],
-                          ),
-
-                          isLoginTrue
-                              ? const Text(
-                                  "Username or passowrd is incorrect",
-                                  style: TextStyle(color: Colors.red),
-                                )
-                              : const SizedBox(),
-                        ],
-                      ),
-                    ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.deepPurpleAccent.shade100,
+                  Colors.purpleAccent.shade100
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
+          Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20.0),
+              child: Container(
+                padding: EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/login.png",
+                        width: 120,
+                        height: 120,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: username,
+                        hintText: "Username",
+                        icon: Icons.person,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Username is required";
+                          }
+                          return null;
+                        },
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 15),
+                      _buildTextField(
+                        controller: password,
+                        hintText: "Password",
+                        icon: Icons.lock,
+                        obscureText: !isVisible,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          },
+                          icon: Icon(isVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Password is required";
+                          }
+                          return null;
+                        },
+                        textInputAction: TextInputAction.done,
+                      ),
+                      const SizedBox(height: 20),
+                      isLoading
+                          ? CircularProgressIndicator()
+                          : _buildButton(
+                              text: "LOGIN",
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  login();
+                                }
+                              },
+                            ),
+                      if (isLoginTrue)
+                        AnimatedOpacity(
+                          opacity: isLoginTrue ? 1.0 : 0.0,
+                          duration: Duration(milliseconds: 300),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Username or password is incorrect",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignUp(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "SIGN UP",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    FormFieldValidator<String>? validator,
+    TextInputAction textInputAction = TextInputAction.next,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        validator: validator,
+        textInputAction: textInputAction,
+        decoration: InputDecoration(
+          icon: Icon(icon, color: Colors.deepPurple),
+          hintText: hintText,
+          border: InputBorder.none,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          suffixIcon: suffixIcon,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton({required String text, required VoidCallback onPressed}) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.deepPurple,
+          padding: EdgeInsets.symmetric(vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 5,
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );

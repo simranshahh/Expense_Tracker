@@ -261,4 +261,27 @@ class DatabaseHelper {
     }
     return 0;
   }
+
+  Future<int> updateDetails(name, address, contact, id) async {
+    final Database db = await initDB();
+
+    return db.rawUpdate(
+        'update users set usrName = ?, usrAddress = ?, usrPhone = ? where usrId = ?',
+        [name, address, contact, id]);
+  }
+
+  Future<Users?> getUserById(int userId) async {
+    final db = await initDB();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+      where: 'usrId = ?',
+      whereArgs: [userId],
+    );
+
+    if (maps.isNotEmpty) {
+      return Users.fromMap(maps.first);
+    } else {
+      return null;
+    }
+  }
 }

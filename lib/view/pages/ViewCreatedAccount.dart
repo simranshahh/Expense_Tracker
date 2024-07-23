@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, file_names
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
@@ -47,10 +47,7 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.push(
                 context,
@@ -63,32 +60,28 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
           'Created Accounts',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        actions: [],
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 50,
+          Container(
+            decoration: BoxDecoration(color: Colors.white),
             child: Padding(
-              padding: const EdgeInsets.only(right: 8.0, bottom: 8),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
-                    height: 30,
-                    width: 90,
+                    height: 40,
+                    width: 120,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.deepPurple, width: 1.5),
+                    ),
                     child: Center(
                       child: DropdownButton<String>(
                         value: _selectedCategory,
-                        icon: const Icon(
-                          Icons.sort,
-                          color: Colors.deepPurple,
-                        ),
+                        icon: const Icon(Icons.sort, color: Colors.deepPurple),
                         elevation: 16,
                         style: const TextStyle(color: Colors.deepPurple),
                         onChanged: (String? value) {
@@ -115,61 +108,40 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: FutureBuilder<List<CreateAccountModel>>(
                 future: _fetchAccounts(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<CreateAccountModel>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                      ),
+                    );
                   } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No Data"));
+                    return Center(
+                      child: Text(
+                        "No Accounts Available",
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
+                    return Center(
+                      child: Text(
+                        "Error: ${snapshot.error}",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    );
                   } else {
                     final items = snapshot.data ?? <CreateAccountModel>[];
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (BuildContext context, index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: InkWell(
-                            child: Container(
-                              height: displayHeight(context) * 0.15,
-                              width: displayWidth(context),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey, blurRadius: 0.1)
-                                  ]),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: NetworkImage(
-                                      'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                                    ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(items[index].accountName),
-                                      Text(items[index].accountPhone.toString())
-                                    ],
-                                  ),
-                                  Text(
-                                    items[index].accountCategory.toString(),
-                                    style: TextStyle(color: Colors.deepPurple),
-                                  )
-                                ],
-                              ),
-                            ),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -179,6 +151,75 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
                                             category: _selectedCategory ?? '',
                                           )));
                             },
+                            child: Container(
+                              height: displayHeight(context) * 0.12,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.4),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: NetworkImage(
+                                        'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            items[index].accountName,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.deepPurple,
+                                            ),
+                                          ),
+                                          Text(
+                                            items[index]
+                                                .accountPhone
+                                                .toString(),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      items[index].accountCategory.toString(),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         );
                       },

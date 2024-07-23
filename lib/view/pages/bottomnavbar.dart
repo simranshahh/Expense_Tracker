@@ -1,11 +1,11 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/view/pages/dashboard.dart';
 import 'package:myfinance/view/pages/inout.dart';
 
 class Bottomnavbar extends StatefulWidget {
-   Bottomnavbar({super.key});
+  const Bottomnavbar({super.key});
 
   @override
   State<Bottomnavbar> createState() => _BottomnavbarState();
@@ -13,7 +13,7 @@ class Bottomnavbar extends StatefulWidget {
 
 class _BottomnavbarState extends State<Bottomnavbar> {
   int _currentIndex = 0;
-  final screens = [DataPage(), INOUT()];
+  final List<Widget> screens = [DataPage(), INOUT()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -22,53 +22,48 @@ class _BottomnavbarState extends State<Bottomnavbar> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-
-    return SafeArea(
-      child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: screens[_currentIndex],
-          // floatingActionButton: QrFLoating(),
-          // floatingActionButtonLocation:
-          // FloatingActionButtonLocation.endContained,
-          bottomNavigationBar: BottomAppBar(
-            clipBehavior: Clip.antiAlias,
-            shape: const CircularNotchedRectangle(),
-            child: BottomNavigationBar(
-                selectedLabelStyle: const TextStyle(
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  fontSize: 10,
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w600,
-                ),
-                backgroundColor: Colors.deepPurple,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.verified_user),
-                    label: 'Profile',
-                  ),
-                ],
-                type: BottomNavigationBarType.fixed,
-                currentIndex: _currentIndex,
-                selectedItemColor: Colors.white,
-                unselectedItemColor: Colors.white,
-                iconSize: 25,
-                onTap: _onItemTapped,
-                showUnselectedLabels: false,
-                elevation: 5,
-                selectedIconTheme: IconThemeData(size: 30)),
-          )),
+    return Scaffold(
+      body: screens[_currentIndex],
+      bottomNavigationBar: BottomAppBar(
+        clipBehavior: Clip.antiAlias,
+        shape: CircularNotchedRectangle(),
+        elevation: 10,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.deepPurple,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          ),
+          child: BottomNavigationBar(
+            selectedLabelStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontFamily: 'Montserrat',
+              fontWeight: FontWeight.w600,
+            ),
+            backgroundColor: Colors.transparent,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.verified_user),
+                label: 'Profile',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white.withOpacity(0.7),
+            iconSize: 28,
+            onTap: _onItemTapped,
+            showUnselectedLabels: true,
+            elevation: 0,
+            selectedIconTheme: IconThemeData(size: 30),
+          ),
+        ),
+      ),
     );
   }
 }

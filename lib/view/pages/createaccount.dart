@@ -5,7 +5,6 @@ import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/colorconstant.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/cashinpage.dart';
 import 'package:myfinance/view/pages/profilepage.dart';
 
 class CreateAccount extends StatefulWidget {

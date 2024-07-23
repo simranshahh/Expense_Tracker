@@ -47,6 +47,7 @@ class _CashInOrOutState extends State<CashInOrOut> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.deepPurple,
           leading: IconButton(
@@ -66,7 +67,6 @@ class _CashInOrOutState extends State<CashInOrOut> {
             key: formKey,
             child: SingleChildScrollView(
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildDropdownField(
@@ -95,7 +95,7 @@ class _CashInOrOutState extends State<CashInOrOut> {
                     },
                   ),
                   _buildTextField(
-                    label: 'Remarks ',
+                    label: 'Remarks',
                     controller: _remarksController,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -187,7 +187,6 @@ class _CashInOrOutState extends State<CashInOrOut> {
               keyboardType: keyboardType,
               validator: validator,
               decoration: InputDecoration(
-                // icon: Icon(Icons.money),
                 border: InputBorder.none,
                 hintText: label,
                 prefixText: prefixText,
@@ -231,17 +230,37 @@ class _CashInOrOutState extends State<CashInOrOut> {
 
   void _handleSubmit() {
     if (formKey.currentState!.validate()) {
-      // Parse the amount from the controller as a double
+      if (_fromController.text == _toController.text) {
+        // Show an error dialog if 'From' and 'To' are the same
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Validation Error'),
+              content: Text('The "From" and "To" accounts cannot be the same.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
       final double parsedAmount = double.parse(_amountController.text);
 
-      // Convert the double to int based on whether it's cash-in or cash-out
       final int amount =
           widget.isCashIn ? parsedAmount.round() : (-parsedAmount).round();
 
       final transaction = TransactionModel(
         fromid: _fromController.text.toString().length,
         toid: _toController.text,
-        amount: amount, // Use the converted int value here
+        amount: amount,
         remarks: _remarksController.text,
         createdAt: DateTime.now().toString(),
       );
