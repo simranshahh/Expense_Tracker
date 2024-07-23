@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, use_build_context_synchronously, unused_import
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
@@ -18,17 +18,16 @@ class CreateAccount extends StatefulWidget {
 
 class _CreateAccountState extends State<CreateAccount> {
   final db = DatabaseHelper();
-  TextEditingController Expensectrl = TextEditingController();
-  final accountname = TextEditingController();
-  final accountaddress = TextEditingController();
-  final accountphone = TextEditingController();
-  final accountcategory = TextEditingController();
+  TextEditingController accountname = TextEditingController();
+  TextEditingController accountaddress = TextEditingController();
+  TextEditingController accountphone = TextEditingController();
+  TextEditingController accountcategory = TextEditingController();
 
-  int? ExpenseId;
+  int? expenseId;
   String? account;
-  int? Expensenumber;
+  int? expenseNumber;
 
-  var items = ["Debitor", "Creditor", "Income", "Expenses", "Cash Back"];
+  final items = ["Debitor", "Creditor", "Income", "Expenses", "Cash Back"];
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -43,243 +42,214 @@ class _CreateAccountState extends State<CreateAccount> {
             style: TextStyle(color: Colors.white),
           ),
           leading: IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ProfilePage()));
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              )),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => ProfilePage(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+          ),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: SingleChildScrollView(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NAME',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.deepPurple.withOpacity(.2)),
-                      child: TextFormField(
-                        controller: accountname,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "username is required";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.person),
-                          border: InputBorder.none,
-                          hintText: "Full Name",
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'ADDRESS',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.deepPurple.withOpacity(.2)),
-                      child: TextFormField(
-                        controller: accountaddress,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Address is required";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.person),
-                          border: InputBorder.none,
-                          hintText: "Address",
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'CONTACT',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.deepPurple.withOpacity(.2)),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        controller: accountphone,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Contact is required";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.person),
-                          border: InputBorder.none,
-                          hintText: "Contact",
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'CATEGORY',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      height: 65,
-                      margin: EdgeInsets.all(1),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.deepPurple.withOpacity(.2)),
-                      child: TextFormField(
-                        readOnly: true,
-                        onSaved: (input) => account = input,
-                        controller: accountcategory,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.category),
-                          // border: OutlineInputBorder(),
-
-                          suffixIcon: PopupMenuButton<String>(
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: ColorConstant.grey,
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTextField(
+                    label: 'NAME',
+                    hintText: 'Full Name',
+                    icon: Icons.person,
+                    controller: accountname,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Username is required";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  _buildTextField(
+                    label: 'ADDRESS',
+                    hintText: 'Address',
+                    icon: Icons.location_on,
+                    controller: accountaddress,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Address is required";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  _buildTextField(
+                    label: 'CONTACT',
+                    hintText: 'Contact',
+                    icon: Icons.phone,
+                    controller: accountphone,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Contact is required";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  _buildCategoryDropdown(),
+                  SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          db.accountcreate(
+                            CreateAccountModel(
+                              userId: 1, // Replace with actual userId if available
+                              accountName: accountname.text,
+                              accountAddress: accountaddress.text,
+                              accountPhone: accountphone.text,
+                              accountCategory: accountcategory.text,
                             ),
-                            onSelected: (String value) {
-                              setState(() {
-                                accountcategory.text = value;
-                                if (value == "Debitor") {
-                                  Expensenumber = 1;
-                                } else if (value == "Creditor") {
-                                  Expensenumber = 2;
-                                } else if (value == "Income") {
-                                  Expensenumber = 3;
-                                } else if (value == "Expenses") {
-                                  Expensenumber = 4;
-                                } else if (value == "Cash Back") {
-                                  Expensenumber = 5;
-                                } else {
-                                  Expensenumber = 0;
-                                }
-                              });
-                            },
-                            itemBuilder: (BuildContext context) {
-                              return items
-                                  .map<PopupMenuItem<String>>((String value) {
-                                return PopupMenuItem(
-                                    value: value, child: Text(value));
-                              }).toList();
-                            },
-                          ),
-                          fillColor: Colors.grey.shade300,
-                          // filled: true,
-                          labelText: 'Category',
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide.none),
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value!.isEmpty) return 'Category';
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                        child: ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                db
-                                    .accountcreate(
-                                  CreateAccountModel(
-                                    // accountId: autoincrement,
-                                    accountName: accountname.text,
-                                    accountAddress: accountaddress.text,
-                                    accountPhone: accountphone.text,
-                                    accountCategory: accountcategory.text,
-                                  ),
-                                )
-                                    .whenComplete(() {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Created'),
-                                          content: Text(
-                                              'Account Created Successfully'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              Bottomnavbar()));
-                                                },
-                                                child: Text('OK'))
-                                          ],
+                          ).whenComplete(() {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Created'),
+                                  content: Text('Account Created Successfully'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) => Bottomnavbar(),
+                                          ),
                                         );
-                                      });
-                                });
-                              }
-                            },
-                            child: Text('Save')))
-                  ],
-                ),
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          });
+                        }
+                      },
+                      child: Text('Save'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hintText,
+    required IconData icon,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    required String? Function(String?) validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 5),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.deepPurple.withOpacity(.2),
+          ),
+          child: TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            validator: validator,
+            decoration: InputDecoration(
+              icon: Icon(icon),
+              border: InputBorder.none,
+              hintText: hintText,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'CATEGORY',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(height: 5),
+        Container(
+          height: 65,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.deepPurple.withOpacity(.2),
+          ),
+          child: TextFormField(
+            readOnly: true,
+            controller: accountcategory,
+            decoration: InputDecoration(
+              icon: Icon(Icons.category),
+              suffixIcon: PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  color: ColorConstant.grey,
+                ),
+                onSelected: (String value) {
+                  setState(() {
+                    accountcategory.text = value;
+                    expenseNumber = items.indexOf(value) + 1;
+                  });
+                },
+                itemBuilder: (BuildContext context) {
+                  return items
+                      .map<PopupMenuItem<String>>((String value) {
+                    return PopupMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList();
+                },
+              ),
+              fillColor: Colors.grey.shade300,
+              labelText: 'Category',
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) return 'Category is required';
+              return null;
+            },
+          ),
+        ),
+      ],
     );
   }
 }

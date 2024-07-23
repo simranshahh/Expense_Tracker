@@ -23,7 +23,7 @@ class DatabaseHelper {
       "create table users (usrId INTEGER PRIMARY KEY AUTOINCREMENT, usrName TEXT UNIQUE, usrPassword TEXT, usrPhone TEXT, usrAddress TEXT)";
 
   String createaccount =
-      "create table auto_account (account_id INTEGER PRIMARY KEY AUTOINCREMENT, account_name varchar, account_address varchar, account_phone varchar(10), account_category varchar)";
+      "create table auto_account (account_id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER, account_name varchar, account_address varchar, account_phone varchar(10), account_category varchar, FOREIGN KEY(user_id) REFERENCES users(usrId))";
 
   String transactionTable =
       "create table auto_transaction (id INTEGER PRIMARY KEY AUTOINCREMENT, from_id INTEGER, to_id INTEGER, amount NUMERIC DECIMAL(10,3), remarks TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, CONSTRAINT from_id_account_fkey FOREIGN KEY (from_id) REFERENCES auto_account(account_id),  CONSTRAINT to_id_account_fkey FOREIGN KEY (to_id) REFERENCES auto_account(account_id))";
@@ -188,6 +188,12 @@ class DatabaseHelper {
     return db.insert('users', user.toMap());
   }
 
+  Future<int> signupAndReturnId(Users user) async {
+    final Database db = await initDB();
+    await backupDatabase();
+    await copyDatabaseToExternalStorage();
+    return db.insert('users', user.toMap());
+  }
   //CRUD Methods
 
   // Create Account

@@ -4,6 +4,7 @@
 
 class CreateAccountModel {
   final int? accountId;
+  final int userId;
   final String accountName;
   final String accountAddress;
   final String? accountPhone;
@@ -11,6 +12,7 @@ class CreateAccountModel {
 
   CreateAccountModel({
     this.accountId,
+    required this.userId,
     required this.accountName,
     required this.accountAddress,
     this.accountPhone,
@@ -20,6 +22,7 @@ class CreateAccountModel {
   factory CreateAccountModel.fromMap(Map<String, dynamic> json) =>
       CreateAccountModel(
         accountId: json["account_id"],
+        userId: json["user_id"],
         accountName: json["account_name"],
         accountAddress: json["account_address"],
         accountPhone: json["account_phone"],
@@ -28,6 +31,7 @@ class CreateAccountModel {
 
   Map<String, dynamic> toMap() => {
         "account_id": accountId,
+        "user_id": userId,
         "account_name": accountName,
         "account_address": accountAddress,
         "account_phone": accountPhone,

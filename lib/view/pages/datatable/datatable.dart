@@ -77,12 +77,14 @@ class _DataTablesState extends State<DataTables> {
                 final fromAccount = accounts.firstWhere(
                     (account) => account.accountId == transaction.fromid,
                     orElse: () => CreateAccountModel(
+                      userId: 1,
                         accountName: "Unknown Account",
                         accountAddress: "N/A",
                         accountCategory: widget.category));
                 final toAccount = accounts.firstWhere(
                     (account) => account.accountId == transaction.toid,
                     orElse: () => CreateAccountModel(
+                      userId: 1,
                         accountName: "Unknown Account",
                         accountAddress: "N/A",
                         accountCategory: widget.category));

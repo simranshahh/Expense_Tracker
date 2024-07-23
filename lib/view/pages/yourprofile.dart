@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,7 +88,9 @@ class _YourProfileState extends State<YourProfile> {
         await handler.insertProfilePicture(profilePicture);
       }
     } catch (e) {
-      print('Error picking image: $e');
+      if (kDebugMode) {
+        print('Error picking image: $e');
+      }
     }
   }
 
