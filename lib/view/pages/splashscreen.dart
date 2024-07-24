@@ -4,9 +4,7 @@ import 'package:easy_splash_screen/easy_splash_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/utils/colorconstant.dart';
-import 'package:myfinance/view/auth/login/pages/loginpage.dart';
 import 'package:myfinance/view/pages/onboarding.dart';
-import 'package:onboarding/onboarding.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

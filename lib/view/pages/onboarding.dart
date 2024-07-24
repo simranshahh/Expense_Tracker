@@ -18,8 +18,10 @@ class _OnBoardState extends State<OnBoard> {
   @override
   Widget build(BuildContext context) {
     return OnBoardingSlider(
-      finishButtonStyle: FinishButtonStyle(backgroundColor: Colors.deepPurple),
-
+      finishButtonStyle: FinishButtonStyle(
+          backgroundColor: Colors.deepPurple,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
       finishButtonText: 'Continue',
       controllerColor: Colors.deepPurple,
       onFinish: () {
@@ -30,7 +32,6 @@ class _OnBoardState extends State<OnBoard> {
           ),
         );
       },
-      // finishButtonColor: kDarkBlueColor,
       skipTextButton: const Text(
         'Skip',
         style: TextStyle(
@@ -85,7 +86,7 @@ class _OnBoardState extends State<OnBoard> {
                 height: 10,
               ),
               Text(
-                'to find the perfect looking app for expenses record',
+                'To find the perfect looking app for expenses record',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,
