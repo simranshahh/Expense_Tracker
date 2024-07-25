@@ -118,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   Image.asset(
                     'assets/bg.png',
-                    height: 275,
+                    height: displayHeight(context) * 0.32,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),

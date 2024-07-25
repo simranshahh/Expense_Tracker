@@ -39,7 +39,7 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
       return handler.getAccountsByCategory(_selectedCategory!);
     }
     return [];
-  }
+  } //for account fetching
 
   @override
   Widget build(BuildContext context) {

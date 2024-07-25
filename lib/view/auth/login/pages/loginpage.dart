@@ -1,11 +1,12 @@
-// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
-import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/auth/register/pages/registerpage.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
+import '../../../../utils/size_config.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,6 +24,28 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
   final db = DatabaseHelper();
+  final storage = FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCredentials();
+  }
+
+  Future<void> _loadCredentials() async {
+    final storedUsername = await storage.read(key: 'usrName');
+    final storedPassword = await storage.read(key: 'usrPassword');
+    if (storedUsername != null) {
+      setState(() {
+        username.text = storedUsername;
+      });
+    }
+    if (storedPassword != null) {
+      setState(() {
+        password.text = storedPassword;
+      });
+    }
+  }
 
   login() async {
     setState(() {
@@ -30,16 +53,19 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoginTrue = false;
     });
 
-    bool response = await db
-        .login(Users(usrName: username.text, usrPassword: password.text));
+    bool response = await db.login(
+      Users(usrName: username.text, usrPassword: password.text),
+    );
 
     setState(() {
       isLoading = false;
     });
 
     if (response) {
-      Users? currentUser =
-          await db.getUserByCredentials(username.text, password.text);
+      Users? currentUser = await db.getUserByCredentials(
+        username.text,
+        password.text,
+      );
       if (currentUser != null) {
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -60,27 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Stack(
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
           children: [
-            // Container(
-            //   decoration: BoxDecoration(
-            //     gradient: LinearGradient(
-            //       colors: [
-            //         Colors.deepPurpleAccent.shade100,
-            //         Colors.purpleAccent.shade100
-            //       ],
-            //       begin: Alignment.topLeft,
-            //       end: Alignment.bottomRight,
-            //     ),
-            //   ),
-            // ),
             SingleChildScrollView(
-              padding: EdgeInsets.all(0.0),
               child: Container(
                 height: displayHeight(context),
-                padding: EdgeInsets.all(0.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -101,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Image.asset(
                         "assets/bg.png",
                         width: displayWidth(context),
-                        height: 275,
+                        height: displayHeight(context) * 0.32,
                       ),
                       const SizedBox(height: 20),
                       _buildTextField(
@@ -269,13 +281,15 @@ class _LoginScreenState extends State<LoginScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            elevation: 5,
           ),
           onPressed: onPressed,
           child: Text(
             text,
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

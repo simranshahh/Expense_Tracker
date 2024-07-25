@@ -13,6 +13,9 @@ void main() {
     systemNavigationBarIconBrightness: Brightness.dark,
     statusBarIconBrightness: Brightness.dark,
   ));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));// for making the top of phone transparent
   runApp(const MyApp());
 }
 

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, sized_box_for_whitespace, unused_import
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, unnecessary_string_interpolations, unused_import
 
 import 'dart:ffi';
 
@@ -8,8 +8,11 @@ import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
+import 'package:myfinance/view/pages/ViewCreatedAccount.dart';
 import 'package:myfinance/view/pages/chart.dart';
+import 'package:myfinance/view/pages/createaccount.dart';
 import 'package:myfinance/view/pages/profilepage.dart';
+import 'package:myfinance/view/pages/yourprofile.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});
@@ -63,9 +66,16 @@ class _DataPageState extends State<DataPage> {
               bottom: Radius.circular(25),
             ),
           ),
-          leading: Icon(
-            Icons.menu,
-            color: Colors.white,
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
           ),
           title: Center(
             child: Text(
@@ -87,12 +97,62 @@ class _DataPageState extends State<DataPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ProfilePage(),
+                    builder: (BuildContext context) => YourProfile(),
                   ),
                 );
               },
             ),
           ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple,
+                ),
+                child: Center(
+                  child: Row(
+                    children: [
+                      Text(
+                        '       My Finance',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/ic_launcher.png',
+                        scale: 3,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.add_box),
+                title: Text('Create Account'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => CreateAccount()));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.view_agenda),
+                title: Text('View Report'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ViewCreatedAccount()));
+                },
+              ),
+            ],
+          ),
         ),
         backgroundColor: Colors.white,
         body: Padding(
@@ -276,7 +336,7 @@ class _DataPageState extends State<DataPage> {
                                       ),
                                     ),
                                     Text(
-                                      '${transaction.amount.toStringAsFixed(2)}', // Removed $ sign
+                                      '${transaction.amount.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

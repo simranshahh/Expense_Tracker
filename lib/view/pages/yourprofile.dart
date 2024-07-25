@@ -131,15 +131,108 @@ class _YourProfileState extends State<YourProfile> {
   }
 
   Future<void> _updateUserInfo(
-      String name, String address, String phone) async {
+      String name, String address, String phone, String password) async {
     if (currentUser != null) {
-      await handler.updateDetails(currentUser!.usrId, name, address, phone);
+      await handler.updateDetails(
+          name, address, phone, currentUser!.usrId.toString(), password);
       final updatedUser =
           await handler.getUserById(currentUser!.usrId.toString().length);
       setState(() {
         currentUser = updatedUser;
       });
     }
+  }
+
+  Future<void> _changePassword() async {
+    TextEditingController oldPasswordController = TextEditingController();
+    TextEditingController newPasswordController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Change Password'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: oldPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Old Password',
+                  ),
+                ),
+                TextField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                String oldPassword = oldPasswordController.text;
+                String newPassword = newPasswordController.text;
+
+                if (currentUser != null) {
+                  final user = await handler.getUserByCredentials(
+                      currentUser!.usrName, oldPassword);
+
+                  if (user != null) {
+                    await handler.updateDetails(
+                      currentUser!.usrName,
+                      currentUser!.usrAddress ?? '',
+                      currentUser!.usrPhone ?? '',
+                      currentUser!.usrId.toString(),
+                      newPassword,
+                    );
+
+                    await storage.write(key: 'usrPassword', value: newPassword);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Password updated successfully')),
+                    );
+
+                    setState(() {
+                      currentUser = Users(
+                        usrId: currentUser!.usrId,
+                        usrName: currentUser!.usrName,
+                        usrPassword: newPassword,
+                        usrAddress: currentUser!.usrAddress,
+                        usrPhone: currentUser!.usrPhone,
+                      );
+                    });
+
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => LoginScreen()));
+
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => LoginScreen()));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Old password is incorrect')),
+                    );
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -250,147 +343,113 @@ class _YourProfileState extends State<YourProfile> {
                                     shape: BoxShape.circle,
                                   ),
                                   child: _imageBytes != null
-                                      ? CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage:
-                                              MemoryImage(_imageBytes!),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage: NetworkImage(
-                                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIaNyYUpGuv8dBcJLV5CQlVhd1twQpewSIQ&s',
+                                      ? ClipOval(
+                                          child: Image.memory(
+                                            _imageBytes!,
+                                            fit: BoxFit.cover,
+                                            width: 100,
+                                            height: 100,
                                           ),
-                                          backgroundColor: Colors.grey,
+                                        )
+                                      : Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Colors.white,
                                         ),
                                 ),
-                                if (currentUser != null) ...[
-                                  Text(currentUser!.usrName.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: ColorConstant.primarydark,
-                                            fontWeight: FontWeight.w600,
-                                          )),
-                                  Text(currentUser!.usrAddress.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                            color: ColorConstant.grey,
-                                            fontWeight: FontWeight.w600,
-                                          )),
-                                ] else ...[
-                                  Text("Loading user...",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: ColorConstant.primarydark,
-                                            fontWeight: FontWeight.w600,
-                                          )),
-                                ],
+                                SizedBox(height: 8),
+                                TextButton(
+                                  onPressed: _pickAndInsertImage,
+                                  child: Text(
+                                    'Change Photo',
+                                    style: TextStyle(color: Colors.deepPurple),
+                                  ),
+                                ),
                               ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 208.0),
-                    child: Container(
-                      height: 1,
-                      width: displayWidth(context),
-                      color: ColorConstant.grey,
-                    ),
-                  ),
-                  if (currentUser != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 220, left: 30, right: 30),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildProfileInfo(
-                            'Name',
-                            currentUser!.usrName,
-                            (newValue) {
-                              _updateUserInfo(
-                                newValue,
-                                currentUser!.usrAddress ?? '',
-                                currentUser!.usrPhone ?? '',
-                              );
-                            },
-                          ),
-                          _buildProfileInfo(
-                            'Address',
-                            currentUser!.usrAddress ?? '',
-                            (newValue) {
-                              _updateUserInfo(
-                                currentUser!.usrName,
-                                newValue,
-                                currentUser!.usrPhone ?? '',
-                              );
-                            },
-                          ),
-                          _buildProfileInfo(
-                            'Phone Number',
-                            currentUser!.usrPhone ?? '',
-                            (newValue) {
-                              _updateUserInfo(
-                                currentUser!.usrName,
-                                currentUser!.usrAddress ?? '',
-                                newValue,
-                              );
-                            },
-                          ),
-                          // ElevatedButton(
-                          //   onPressed: () async {
-                          //     await storage.deleteAll();
-                          //     Navigator.pushReplacement(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //         builder: (BuildContext context) =>
-                          //             LoginScreen(),
-                          //       ),
-                          //     );
-                          //   },
-                          //   child: Text('Save'),
-                          // ),
-                          Container(
-                            height: 100,
-                          ),
-                        ],
-                      ),
-                    ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 130.0, left: 75),
-                        child: Container(
-                          height: 25,
-                          width: 25,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(35),
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () {
-                                _pickAndInsertImage();
-                              },
-                              icon: Icon(
-                                Icons.camera,
-                                color: Colors.white,
-                                size: 12,
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Text('Username'),
+                                subtitle: Text(currentUser?.usrName ?? ''),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    _showEditDialog(
+                                      'Username',
+                                      currentUser?.usrName ?? '',
+                                      (value) async {
+                                        await _updateUserInfo(
+                                          value,
+                                          currentUser?.usrAddress ?? '',
+                                          currentUser?.usrPhone ?? '',
+                                          currentUser?.usrPassword ?? '',
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
+                              ListTile(
+                                title: Text('Address'),
+                                subtitle: Text(currentUser?.usrAddress ?? ''),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    _showEditDialog(
+                                      'Address',
+                                      currentUser?.usrAddress ?? '',
+                                      (value) async {
+                                        await _updateUserInfo(
+                                          currentUser?.usrName ?? '',
+                                          value,
+                                          currentUser?.usrPhone ?? '',
+                                          currentUser?.usrPassword ?? '',
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: Text('Phone'),
+                                subtitle: Text(currentUser?.usrPhone ?? ''),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    _showEditDialog(
+                                      'Phone',
+                                      currentUser?.usrPhone ?? '',
+                                      (value) async {
+                                        await _updateUserInfo(
+                                          currentUser?.usrName ?? '',
+                                          currentUser?.usrAddress ?? '',
+                                          value,
+                                          currentUser?.usrPassword ?? '',
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: Text('Password'),
+                                subtitle: Text('******'),
+                                trailing: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: _changePassword,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               );
@@ -398,50 +457,6 @@ class _YourProfileState extends State<YourProfile> {
           },
         ),
       ),
-    );
-  }
-
-  Widget _buildProfileInfo(
-      String label, String value, Function(String) onSave) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        Container(
-          height: 55,
-          width: displayWidth(context),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.deepPurple.withOpacity(0.2),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: 16,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    _showEditDialog(label, value, onSave);
-                  },
-                  icon: Icon(Icons.verified_user),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

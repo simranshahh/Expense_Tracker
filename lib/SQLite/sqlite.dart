@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors
+// ignore_for_file: avoid_print, prefer_const_constructors, unused_import
 
 import 'dart:io';
 
@@ -7,10 +7,10 @@ import 'package:myfinance/view/JsonModels/profilepicturemodel.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_file_manager/file_manager.dart';
 
 class DatabaseHelper {
@@ -51,85 +51,85 @@ class DatabaseHelper {
       await db.execute(createaccount);
       await db.execute(transactionTable);
       await db.execute(pictureTable);
-      await requestPermissions();
-      await backupDatabase();
-      await copyDatabaseToExternalStorage();
-      await restoreDatabaseFromBackup();
+      // await requestPermissions();
+      // await backupDatabase();
+      // await copyDatabaseToExternalStorage();
+      // await restoreDatabaseFromBackup();
     });
   }
 
-  Future<void> requestPermissions() async {
-    final status = await Permission.storage.request();
+  // Future<void> requestPermissions() async {
+  //   final status = await Permission.storage.request();
 
-    if (status.isGranted) {
-      print('Storage permission granted');
-    } else if (status.isDenied) {
-      restoreDatabaseFromBackup();
-      print('Storage permission denied');
-    } else if (status.isPermanentlyDenied) {
-      print('Storage permission permanently denied');
-      openAppSettings();
-    } else if (status.isRestricted) {
-      print('Storage permission restricted');
-    }
-  }
+  //   if (status.isGranted) {
+  //     print('Storage permission granted');
+  //   } else if (status.isDenied) {
+  //     restoreDatabaseFromBackup();
+  //     print('Storage permission denied');
+  //   } else if (status.isPermanentlyDenied) {
+  //     print('Storage permission permanently denied');
+  //     openAppSettings();
+  //   } else if (status.isRestricted) {
+  //     print('Storage permission restricted');
+  //   }
+  // }
 
-  Future<void> backupDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, databaseName);
+  // Future<void> backupDatabase() async {
+  //   final databasePath = await getDatabasesPath();
+  //   final path = join(databasePath, databaseName);
 
-    final backupPath = join(databasePath, 'backup_$databaseName');
-    final File originalDbFile = File(path);
-    final File backupDbFile = File(backupPath);
+  //   final backupPath = join(databasePath, 'backup_$databaseName');
+  //   final File originalDbFile = File(path);
+  //   final File backupDbFile = File(backupPath);
 
-    if (await originalDbFile.exists()) {
-      await originalDbFile.copy(backupPath);
-      await requestPermissions();
+  //   if (await originalDbFile.exists()) {
+  //     await originalDbFile.copy(backupPath);
+  //     await requestPermissions();
 
-      print('Database backed up to $backupPath');
-    }
-  }
+  //     print('Database backed up to $backupPath');
+  //   }
+  // }
 
-  Future<void> restoreDatabaseFromBackup() async {
-    await requestPermissions();
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, databaseName);
+  // Future<void> restoreDatabaseFromBackup() async {
+  //   await requestPermissions();
+  //   final databasePath = await getDatabasesPath();
+  //   final path = join(databasePath, databaseName);
 
-    final directory = await getExternalStorageDirectory();
-    if (directory != null) {
-      final externalBackupPath = join(directory.path, 'backup_$databaseName');
-      print('the external backup path is $externalBackupPath');
-      final File backupDbFile = File(externalBackupPath);
-      if (await backupDbFile.exists()) {
-        await backupDbFile.copy(path);
+  //   final directory = await getExternalStorageDirectory();
+  //   if (directory != null) {
+  //     final externalBackupPath = join(directory.path, 'backup_$databaseName');
+  //     print('the external backup path is $externalBackupPath');
+  //     final File backupDbFile = File(externalBackupPath);
+  //     if (await backupDbFile.exists()) {
+  //       await backupDbFile.copy(path);
 
-        print('Database restored from external backup');
-      } else {
-        print('No backup database found');
-      }
-    }
-  }
+  //       print('Database restored from external backup');
+  //     } else {
+  //       print('No backup database found');
+  //     }
+  //   }
+  // }
 
-  Future<void> copyDatabaseToExternalStorage() async {
-    await requestPermissions();
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, databaseName);
+  // Future<void> copyDatabaseToExternalStorage() async {
+  //   await requestPermissions();
+  //   final databasePath = await getDatabasesPath();
+  //   final path = join(databasePath, databaseName);
 
-    final directory = await getExternalStorageDirectory();
-    if (directory != null) {
-      final externalBackupPath = join(directory.path, 'backup_$databaseName');
-      final File originalDbFile = File(path);
+  //   final directory = await getExternalStorageDirectory();
+  //   if (directory != null) {
+  //     final externalBackupPath = join(directory.path, 'backup_$databaseName');
+  //     final File originalDbFile = File(path);
 
-      if (await originalDbFile.exists()) {
-        try {
-          await originalDbFile.copy(externalBackupPath);
-          print('Database copied to external storage at $externalBackupPath');
-        } catch (e) {
-          print('Error copying database to external storage: $e');
-        }
-      }
-    }
-  }
+  //     if (await originalDbFile.exists()) {
+  //       try {
+  //         await originalDbFile.copy(externalBackupPath);
+  //         print('Database copied to external storage at $externalBackupPath');
+  //       } catch (e) {
+  //         print('Error copying database to external storage: $e');
+  //       }
+  //     }
+  //   }
+  // }
 
   Future<String> getDatabasePath() async {
     final databasePath = await getDatabasesPath();
@@ -145,8 +145,8 @@ class DatabaseHelper {
     if (result.isNotEmpty) {
       await storage.write(key: 'usrName', value: user.usrName);
       await storage.write(key: 'usrPassword', value: user.usrPassword);
-      await copyDatabaseToExternalStorage();
-      await backupDatabase();
+      // await copyDatabaseToExternalStorage();
+      // await backupDatabase();
 
       return true;
     } else {
@@ -183,15 +183,15 @@ class DatabaseHelper {
   //Sign up
   Future<int> signup(Users user) async {
     final Database db = await initDB();
-    await backupDatabase();
-    await copyDatabaseToExternalStorage();
+    // await backupDatabase();
+    // await copyDatabaseToExternalStorage();
     return db.insert('users', user.toMap());
   }
 
   Future<int> signupAndReturnId(Users user) async {
     final Database db = await initDB();
-    await backupDatabase();
-    await copyDatabaseToExternalStorage();
+    // await backupDatabase();
+    // await copyDatabaseToExternalStorage();
     return db.insert('users', user.toMap());
   }
   //CRUD Methods
@@ -268,12 +268,18 @@ class DatabaseHelper {
     return 0;
   }
 
-  Future<int> updateDetails(name, address, contact, id) async {
+  Future<int> updateDetails(
+    String name,
+    String address,
+    String contact,
+    String password,
+    id,
+  ) async {
     final Database db = await initDB();
 
     return db.rawUpdate(
-        'update users set usrName = ?, usrAddress = ?, usrPhone = ? where usrId = ?',
-        [name, address, contact, id]);
+        'UPDATE users SET usrName = ?, usrAddress = ?, usrPhone = ?, usrPassword = ? WHERE usrId = ?',
+        [name, address, contact, password, id]);
   }
 
   Future<Users?> getUserById(int userId) async {

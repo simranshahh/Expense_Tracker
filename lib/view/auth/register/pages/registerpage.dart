@@ -27,232 +27,237 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/bg.png',
-            height: 275,
-          ),
-          // Background gradient with diagonal curve
-          // ClipPath(
-          //   clipper: DiagonalCurveClipper(),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       gradient: LinearGradient(
-          //         colors: [Colors.deepPurple, Colors.purple.shade300],
-          //         begin: Alignment.topLeft,
-          //         end: Alignment.bottomRight,
-          //       ),
-          //     ),
-          //     height: MediaQuery.of(context).size.height,
-          //   ),
-          // ),
-          Padding(
-            padding: const EdgeInsets.only(top: 288.0),
-            child: Container(
-              color: Colors.white,
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
-                  child: _isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : Form(
-                          key: formKey,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // Image.asset(
-                                //   'assets/bg.png',
-                                //   height: 275,
-                                // ),
-                                const SizedBox(height: 20),
-                                _buildTextField(
-                                  controller: username,
-                                  hintText: "Username",
-                                  icon: Icons.person,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Username is required";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                _buildTextField(
-                                  controller: phone,
-                                  hintText: "Phone Number",
-                                  icon: Icons.phone,
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Phone Number is required";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                _buildTextField(
-                                  controller: address,
-                                  hintText: "Address",
-                                  icon: Icons.location_on,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Address is required";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                _buildTextField(
-                                  controller: password,
-                                  hintText: "Password",
-                                  icon: Icons.lock,
-                                  obscureText: !isVisible,
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isVisible = !isVisible;
-                                      });
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Image.asset(
+              'assets/bg.png',
+              height: displayHeight(context) * 0.32,
+            ),
+            // Background gradient with diagonal curve
+            // ClipPath(
+            //   clipper: DiagonalCurveClipper(),
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         colors: [Colors.deepPurple, Colors.purple.shade300],
+            //         begin: Alignment.topLeft,
+            //         end: Alignment.bottomRight,
+            //       ),
+            //     ),
+            //     height: MediaQuery.of(context).size.height,
+            //   ),
+            // ),
+            Padding(
+              padding: const EdgeInsets.only(top: 288.0),
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+                    child: _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : Form(
+                            key: formKey,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  // Image.asset(
+                                  //   'assets/bg.png',
+                                  //   height: 275,
+                                  // ),
+                                  const SizedBox(height: 20),
+                                  _buildTextField(
+                                    controller: username,
+                                    hintText: "Username",
+                                    icon: Icons.person,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Username is required";
+                                      }
+                                      return null;
                                     },
-                                    icon: Icon(isVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off),
                                   ),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Password is required";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                _buildTextField(
-                                  controller: confirmPassword,
-                                  hintText: "Confirm Password",
-                                  icon: Icons.lock,
-                                  obscureText: !isVisible,
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isVisible = !isVisible;
-                                      });
+                                  _buildTextField(
+                                    controller: phone,
+                                    hintText: "Phone Number",
+                                    icon: Icons.phone,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Phone Number is required";
+                                      }
+                                      return null;
                                     },
-                                    icon: Icon(isVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off),
                                   ),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Password confirmation is required";
-                                    } else if (password.text !=
-                                        confirmPassword.text) {
-                                      return "Passwords don't match";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                _buildButton(
-                                  text: "SIGN UP",
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-
-                                      final db = DatabaseHelper();
-                                      db
-                                          .signup(Users(
-                                        usrName: username.text,
-                                        usrPassword: password.text,
-                                        usrPhone: phone.text,
-                                        usrAddress: address.text,
-                                      ))
-                                          .whenComplete(() {
-                                        setState(() {
-                                          _isLoading = false;
-                                        });
-                                        if (!mounted) return;
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text("Signup Successful"),
-                                              content: Text(
-                                                  "You have successfully signed up."),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            LoginScreen(),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Text("OK"),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      });
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text("Already have an account?",
-                                        style:
-                                            TextStyle(color: Colors.black54)),
-                                    TextButton(
+                                  _buildTextField(
+                                    controller: address,
+                                    hintText: "Address",
+                                    icon: Icons.location_on,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Address is required";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  _buildTextField(
+                                    controller: password,
+                                    hintText: "Password",
+                                    icon: Icons.lock,
+                                    obscureText: !isVisible,
+                                    suffixIcon: IconButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => LoginScreen(),
-                                          ),
-                                        );
+                                        setState(() {
+                                          isVisible = !isVisible;
+                                        });
                                       },
-                                      child: const Text("Login",
-                                          style: TextStyle(
-                                              color: Colors.deepPurple,
-                                              fontWeight: FontWeight.bold)),
+                                      icon: Icon(isVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
                                     ),
-                                  ],
-                                ),
-                              ],
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Password is required";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  _buildTextField(
+                                    controller: confirmPassword,
+                                    hintText: "Confirm Password",
+                                    icon: Icons.lock,
+                                    obscureText: !isVisible,
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isVisible = !isVisible;
+                                        });
+                                      },
+                                      icon: Icon(isVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Password confirmation is required";
+                                      } else if (password.text !=
+                                          confirmPassword.text) {
+                                        return "Passwords don't match";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  _buildButton(
+                                    text: "SIGN UP",
+                                    onPressed: () {
+                                      if (formKey.currentState!.validate()) {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+
+                                        final db = DatabaseHelper();
+                                        db
+                                            .signup(Users(
+                                          usrName: username.text,
+                                          usrPassword: password.text,
+                                          usrPhone: phone.text,
+                                          usrAddress: address.text,
+                                        ))
+                                            .whenComplete(() {
+                                          setState(() {
+                                            _isLoading = false;
+                                          });
+                                          if (!mounted) return;
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title:
+                                                    Text("Signup Successful"),
+                                                content: Text(
+                                                    "You have successfully signed up."),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              LoginScreen(),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text("OK"),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        });
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text("Already have an account?",
+                                          style:
+                                              TextStyle(color: Colors.black54)),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text("Login",
+                                            style: TextStyle(
+                                                color: Colors.deepPurple,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+                  ),
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 50.0),
-                child: Text(
-                  'MyFinance',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 50.0),
+                  child: Text(
+                    'MyFinance',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
                 ),
-              ),
-              Image.asset(
-                'assets/ic_launcher.png',
-                scale: 3,
-              )
-            ],
-          ),
-        ],
+                Image.asset(
+                  'assets/ic_launcher.png',
+                  scale: 3,
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

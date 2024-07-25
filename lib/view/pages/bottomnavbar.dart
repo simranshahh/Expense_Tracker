@@ -48,8 +48,8 @@ class _BottomnavbarState extends State<Bottomnavbar> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.verified_user),
-                label: 'Profile',
+                icon: Icon(Icons.account_balance),
+                label: 'Transaction',
               ),
             ],
             type: BottomNavigationBarType.fixed,
