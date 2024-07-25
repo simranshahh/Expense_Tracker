@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, sized_box_for_whitespace, unused_import
+
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +8,7 @@ import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
+import 'package:myfinance/view/pages/chart.dart';
 import 'package:myfinance/view/pages/profilepage.dart';
 
 class DataPage extends StatefulWidget {
@@ -154,6 +157,7 @@ class _DataPageState extends State<DataPage> {
                   },
                 ),
               ),
+              Container(height: 280, child: Chart()),
               SizedBox(
                 height: 20,
               ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
+import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/auth/register/pages/registerpage.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
@@ -59,26 +60,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.deepPurpleAccent.shade100,
-                  Colors.purpleAccent.shade100
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(20.0),
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Container(
+            //   decoration: BoxDecoration(
+            //     gradient: LinearGradient(
+            //       colors: [
+            //         Colors.deepPurpleAccent.shade100,
+            //         Colors.purpleAccent.shade100
+            //       ],
+            //       begin: Alignment.topLeft,
+            //       end: Alignment.bottomRight,
+            //     ),
+            //   ),
+            // ),
+            SingleChildScrollView(
+              padding: EdgeInsets.all(0.0),
               child: Container(
-                padding: EdgeInsets.all(20.0),
+                height: displayHeight(context),
+                padding: EdgeInsets.all(0.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -86,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
                       blurRadius: 15,
-                      offset: Offset(0, 10),
+                      offset: Offset(0, 20),
                     ),
                   ],
                 ),
@@ -97,9 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        "assets/login.png",
-                        width: 120,
-                        height: 120,
+                        "assets/bg.png",
+                        width: displayWidth(context),
+                        height: 275,
                       ),
                       const SizedBox(height: 20),
                       _buildTextField(
@@ -189,8 +191,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 50.0),
+                  child: Text(
+                    'MyFinance',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
+                ),
+                Image.asset(
+                  'assets/ic_launcher.png',
+                  scale: 3,
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -235,24 +256,27 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildButton({required String text, required VoidCallback onPressed}) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.deepPurple,
-          padding: EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepPurple,
+            padding: EdgeInsets.symmetric(vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 5,
           ),
-          elevation: 5,
-        ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          onPressed: onPressed,
+          child: Text(
+            text,
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
         ),
       ),
     );

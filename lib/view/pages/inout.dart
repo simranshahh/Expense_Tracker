@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/cashonoutpage.dart';
+import 'package:myfinance/view/pages/cashinoutpage.dart';
 
 class INOUT extends StatefulWidget {
   const INOUT({super.key});

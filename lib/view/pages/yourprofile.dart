@@ -227,8 +227,8 @@ class _YourProfileState extends State<YourProfile> {
                       decoration: BoxDecoration(
                           color: ColorConstant.white,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(45),
+                            topRight: Radius.circular(45),
                           )),
                     ),
                   ),

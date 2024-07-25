@@ -48,6 +48,7 @@ dependencies:
   video_player: ^2.9.1
   onboarding: ^4.0.2
   flutter_onboarding_slider: ^1.0.11
+  syncfusion_flutter_charts: ^26.1.42
 
 dev_dependencies:
   flutter_test:

@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ColorConstant.primary,
+        backgroundColor: ColorConstant.white,
         body: FutureBuilder<List<Users>>(
           future: udata,
           builder: (BuildContext context, AsyncSnapshot<List<Users>> snapshot) {
@@ -116,8 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
               return Stack(
                 children: [
-                  Container(
-                    color: Colors.deepPurple,
+                  Image.asset(
+                    'assets/bg.png',
+                    height: 275,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -178,19 +179,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 118.0),
+                    padding: const EdgeInsets.only(top: 278.0),
                     child: Container(
                       height: displayHeight(context),
                       decoration: BoxDecoration(
                           color: ColorConstant.white,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(45),
+                            topRight: Radius.circular(45),
                           )),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    padding: const EdgeInsets.only(top: 130),
                     child: Column(
                       children: [
                         Row(
@@ -200,8 +201,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             Column(
                               children: [
                                 Container(
-                                  width: 90,
-                                  height: 90,
+                                  width: 100,
+                                  height: 100,
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.001),
                                     borderRadius: BorderRadius.circular(35),
@@ -220,29 +221,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 if (currentUser != null) ...[
-                                  Text(currentUser!.usrName.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: ColorConstant.primarydark,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 28.0),
+                                    child: Text(currentUser!.usrName.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                                color:
+                                                    ColorConstant.primarydark,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 20)),
+                                  ),
                                   Text(currentUser!.usrAddress.toString(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!
                                           .copyWith(
-                                            color: ColorConstant.grey,
-                                            fontWeight: FontWeight.w600,
-                                          )),
+                                              color: ColorConstant.grey,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18)),
                                 ],
                                 SizedBox(
                                   height: displayHeight(context) * 0.06,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 0.0),
+                                  padding: const EdgeInsets.only(top: 0.0),
                                   child: SizedBox(
                                     width: displayWidth(context) * 0.9,
                                     height: displayHeight(context) * 0.075,
