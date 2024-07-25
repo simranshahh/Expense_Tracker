@@ -127,12 +127,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      Bottomnavbar()),
-                            );
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Bottomnavbar()));
                           },
                           icon: Icon(
                             Icons.arrow_back,
@@ -158,10 +156,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       onPressed: () async {
                                         await storage.deleteAll();
                                         Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  LoginScreen()),
-                                        );
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        LoginScreen()));
                                       },
                                       child: Text('Yes'),
                                     ),

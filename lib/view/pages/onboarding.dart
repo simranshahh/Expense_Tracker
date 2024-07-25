@@ -25,12 +25,8 @@ class _OnBoardState extends State<OnBoard> {
       finishButtonText: 'Continue',
       controllerColor: Colors.deepPurple,
       onFinish: () {
-        Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => LoginScreen(),
-          ),
-        );
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => LoginScreen()));
       },
       skipTextButton: const Text(
         'Skip',
