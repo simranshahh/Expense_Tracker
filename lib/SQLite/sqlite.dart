@@ -51,85 +51,8 @@ class DatabaseHelper {
       await db.execute(createaccount);
       await db.execute(transactionTable);
       await db.execute(pictureTable);
-      // await requestPermissions();
-      // await backupDatabase();
-      // await copyDatabaseToExternalStorage();
-      // await restoreDatabaseFromBackup();
     });
   }
-
-  // Future<void> requestPermissions() async {
-  //   final status = await Permission.storage.request();
-
-  //   if (status.isGranted) {
-  //     print('Storage permission granted');
-  //   } else if (status.isDenied) {
-  //     restoreDatabaseFromBackup();
-  //     print('Storage permission denied');
-  //   } else if (status.isPermanentlyDenied) {
-  //     print('Storage permission permanently denied');
-  //     openAppSettings();
-  //   } else if (status.isRestricted) {
-  //     print('Storage permission restricted');
-  //   }
-  // }
-
-  // Future<void> backupDatabase() async {
-  //   final databasePath = await getDatabasesPath();
-  //   final path = join(databasePath, databaseName);
-
-  //   final backupPath = join(databasePath, 'backup_$databaseName');
-  //   final File originalDbFile = File(path);
-  //   final File backupDbFile = File(backupPath);
-
-  //   if (await originalDbFile.exists()) {
-  //     await originalDbFile.copy(backupPath);
-  //     await requestPermissions();
-
-  //     print('Database backed up to $backupPath');
-  //   }
-  // }
-
-  // Future<void> restoreDatabaseFromBackup() async {
-  //   await requestPermissions();
-  //   final databasePath = await getDatabasesPath();
-  //   final path = join(databasePath, databaseName);
-
-  //   final directory = await getExternalStorageDirectory();
-  //   if (directory != null) {
-  //     final externalBackupPath = join(directory.path, 'backup_$databaseName');
-  //     print('the external backup path is $externalBackupPath');
-  //     final File backupDbFile = File(externalBackupPath);
-  //     if (await backupDbFile.exists()) {
-  //       await backupDbFile.copy(path);
-
-  //       print('Database restored from external backup');
-  //     } else {
-  //       print('No backup database found');
-  //     }
-  //   }
-  // }
-
-  // Future<void> copyDatabaseToExternalStorage() async {
-  //   await requestPermissions();
-  //   final databasePath = await getDatabasesPath();
-  //   final path = join(databasePath, databaseName);
-
-  //   final directory = await getExternalStorageDirectory();
-  //   if (directory != null) {
-  //     final externalBackupPath = join(directory.path, 'backup_$databaseName');
-  //     final File originalDbFile = File(path);
-
-  //     if (await originalDbFile.exists()) {
-  //       try {
-  //         await originalDbFile.copy(externalBackupPath);
-  //         print('Database copied to external storage at $externalBackupPath');
-  //       } catch (e) {
-  //         print('Error copying database to external storage: $e');
-  //       }
-  //     }
-  //   }
-  // }
 
   Future<String> getDatabasePath() async {
     final databasePath = await getDatabasesPath();
@@ -164,6 +87,11 @@ class DatabaseHelper {
       var result = await db.rawQuery(
           "SELECT * FROM users WHERE usrName = ? AND usrPassword = ?",
           [usrName, usrPassword]);
+
+      if (result.isNotEmpty) {
+        return Users.fromMap(result
+            .first); // Assuming fromMap is a method to map DB result to Users object
+      }
     }
     return null;
   }
@@ -256,6 +184,20 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> result = await db.rawQuery(
         'SELECT * FROM auto_account WHERE account_category = ?', [category]);
     return result.map((item) => CreateAccountModel.fromMap(item)).toList();
+  }
+
+  Future<List<CreateAccountModel>> getAccountsByCategoryAndUser(
+      String category, int userId) async {
+    final Database db = await initDB();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'auto_account',
+      where: 'account_category = ? AND user_id = ?',
+      whereArgs: [category, userId],
+    );
+
+    return List.generate(maps.length, (i) {
+      return CreateAccountModel.fromMap(maps[i]);
+    });
   }
 
   Future<Object> getTotalExpenses() async {

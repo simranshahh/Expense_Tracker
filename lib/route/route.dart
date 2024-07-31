@@ -8,7 +8,7 @@ import 'package:myfinance/view/pages/bottomnavbar.dart';
 import 'package:myfinance/view/pages/cashinoutpage.dart';
 import 'package:myfinance/view/pages/chart.dart';
 import 'package:myfinance/view/pages/createaccount.dart';
-import 'package:myfinance/view/pages/profilepage.dart';
+import 'package:myfinance/view/pages/Dummy/profilepage.dart';
 import 'package:myfinance/view/pages/splashscreen.dart';
 import 'package:myfinance/view/pages/yourprofile.dart';
 import 'package:onboarding/onboarding.dart';
@@ -23,8 +23,8 @@ class MyRoutes {
       case '/bottomnavbar':
         return MaterialPageRoute(builder: (context) => Bottomnavbar());
 
-      case '/profilepage':
-        return MaterialPageRoute(builder: (context) => ProfilePage());
+      // case '/profilepage':
+      //   return MaterialPageRoute(builder: (context) => ProfilePage());
       case '/yourprofilepage':
         return MaterialPageRoute(builder: (context) => YourProfile());
       case '/createaccount':

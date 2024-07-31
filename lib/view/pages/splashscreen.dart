@@ -5,7 +5,7 @@ import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance/utils/colorconstant.dart';
 import 'package:myfinance/view/pages/onboarding.dart';
-import 'package:myfinance/view/pages/uitry.dart';
+import 'package:myfinance/view/pages/Dummy/uitry.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,8 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       // backgroundColor: Colors.deepPurple,
       durationInSeconds: 2,
-      logo: Image.network(
-          'https://cdn-icons-png.flaticon.com/128/9359/9359415.png'),
+      logo: Image.asset('assets/logo.png'),
       title: Text(
         'MyFinance',
         style: TextStyle(

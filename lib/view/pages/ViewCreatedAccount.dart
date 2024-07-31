@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
+import 'package:myfinance/view/JsonModels/users.dart';
+import 'package:myfinance/view/pages/bottomnavbar.dart';
 import 'package:myfinance/view/pages/datatable/datatable.dart';
-import 'package:myfinance/view/pages/profilepage.dart';
 
 class ViewCreatedAccount extends StatefulWidget {
   const ViewCreatedAccount({super.key});
@@ -17,12 +18,19 @@ class ViewCreatedAccount extends StatefulWidget {
 class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
   String? _selectedCategory;
   late DatabaseHelper handler;
+  Users? currentUser;
 
   @override
   void initState() {
     handler = DatabaseHelper();
     _fetchCategories();
+    _fetchCurrentUser();
     super.initState();
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    currentUser = await handler.getCurrentUser();
+    setState(() {}); // Refresh the UI after fetching the user
   }
 
   Future<void> _fetchCategories() async {
@@ -35,11 +43,12 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
   }
 
   Future<List<CreateAccountModel>> _fetchAccounts() async {
-    if (_selectedCategory != null) {
-      return handler.getAccountsByCategory(_selectedCategory!);
+    if (_selectedCategory != null && currentUser != null) {
+      return handler.getAccountsByCategoryAndUser(
+          _selectedCategory!, currentUser!.usrId.toString().length);
     }
     return [];
-  } //for account fetching
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +58,10 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => ProfilePage()));
+                    builder: (BuildContext context) => Bottomnavbar()));
           },
         ),
         backgroundColor: Colors.deepPurple,
@@ -170,9 +179,8 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
                                     padding: const EdgeInsets.all(12.0),
                                     child: CircleAvatar(
                                       radius: 30,
-                                      backgroundImage: NetworkImage(
-                                        'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                                      ),
+                                      backgroundImage:
+                                          AssetImage('assets/profile.png'),
                                     ),
                                   ),
                                   Expanded(

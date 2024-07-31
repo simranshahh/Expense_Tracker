@@ -1,11 +1,12 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, use_build_context_synchronously
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/colorconstant.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
+import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
-import 'package:myfinance/view/pages/profilepage.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -23,12 +24,37 @@ class _CreateAccountState extends State<CreateAccount> {
   TextEditingController accountphone = TextEditingController();
   TextEditingController accountcategory = TextEditingController();
 
-  int? expenseId;
-  String? account;
+  Users? currentUser;
   int? expenseNumber;
 
   final items = ["Debitor", "Creditor", "Income", "Expenses", "Cash Back"];
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentUser();
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    try {
+      currentUser = await db.getCurrentUser();
+      if (currentUser == null) {
+        if (kDebugMode) {
+          print("No current user found.");
+        }
+      } else {
+        if (kDebugMode) {
+          print("Current User ID: ${currentUser!.usrId}");
+        }
+      }
+      setState(() {}); // Refresh the UI after fetching the user
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching current user: $e");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +72,7 @@ class _CreateAccountState extends State<CreateAccount> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => ProfilePage(),
+                  builder: (BuildContext context) => Bottomnavbar(),
                 ),
               );
             },
@@ -108,40 +134,89 @@ class _CreateAccountState extends State<CreateAccount> {
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          db.accountcreate(
-                            CreateAccountModel(
-                              userId: 1, // Replace with actual userId if available
-                              accountName: accountname.text,
-                              accountAddress: accountaddress.text,
-                              accountPhone: accountphone.text,
-                              accountCategory: accountcategory.text,
-                            ),
-                          ).whenComplete(() {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Created'),
-                                  content: Text('Account Created Successfully'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) => Bottomnavbar(),
-                                          ),
-                                        );
-                                      },
-                                      child: Text('OK'),
-                                    ),
-                                  ],
+                          if (currentUser != null) {
+                            try {
+                              if (kDebugMode) {
+                                print("Current User ID: ${currentUser!.usrId}");
+                              }
+                              if (kDebugMode) {
+                                print("Account Name: ${accountname.text}");
+                              }
+                              if (kDebugMode) {
+                                print(
+                                    "Account Address: ${accountaddress.text}");
+                              }
+                              if (kDebugMode) {
+                                print("Account Phone: ${accountphone.text}");
+                              }
+                              if (kDebugMode) {
+                                print(
+                                    "Account Category: ${accountcategory.text}");
+                              }
+
+                              int result = await db.accountcreate(
+                                CreateAccountModel(
+                                  userId: currentUser!.usrId
+                                      .toString()
+                                      .length, // Use current user's ID
+                                  accountName: accountname.text,
+                                  accountAddress: accountaddress.text,
+                                  accountPhone: accountphone.text,
+                                  accountCategory: accountcategory.text,
+                                ),
+                              );
+
+                              if (kDebugMode) {
+                                print("Insert Result: $result");
+                              }
+
+                              if (result > 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Created'),
+                                      content:
+                                          Text('Account Created Successfully'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Bottomnavbar(),
+                                              ),
+                                            );
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          });
+                              } else {
+                                if (kDebugMode) {
+                                  print("Failed to create account");
+                                }
+                              }
+                            } catch (e) {
+                              if (kDebugMode) {
+                                print("Error occurred: $e");
+                              }
+                            }
+                          } else {
+                            if (kDebugMode) {
+                              print("currentUser is null");
+                            }
+                          }
+                        } else {
+                          if (kDebugMode) {
+                            print("Form validation failed");
+                          }
                         }
                       },
                       child: Text('Save'),
@@ -226,8 +301,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   });
                 },
                 itemBuilder: (BuildContext context) {
-                  return items
-                      .map<PopupMenuItem<String>>((String value) {
+                  return items.map<PopupMenuItem<String>>((String value) {
                     return PopupMenuItem(
                       value: value,
                       child: Text(value),

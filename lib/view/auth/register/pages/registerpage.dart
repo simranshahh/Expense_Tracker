@@ -34,22 +34,9 @@ class _SignUpState extends State<SignUp> {
           children: [
             Image.asset(
               'assets/bg.png',
+              width: displayWidth(context),
               height: displayHeight(context) * 0.32,
             ),
-            // Background gradient with diagonal curve
-            // ClipPath(
-            //   clipper: DiagonalCurveClipper(),
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //       gradient: LinearGradient(
-            //         colors: [Colors.deepPurple, Colors.purple.shade300],
-            //         begin: Alignment.topLeft,
-            //         end: Alignment.bottomRight,
-            //       ),
-            //     ),
-            //     height: MediaQuery.of(context).size.height,
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(top: 288.0),
               child: Container(
@@ -68,10 +55,6 @@ class _SignUpState extends State<SignUp> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  // Image.asset(
-                                  //   'assets/bg.png',
-                                  //   height: 275,
-                                  // ),
                                   const SizedBox(height: 20),
                                   _buildTextField(
                                     controller: username,
