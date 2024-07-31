@@ -6,7 +6,9 @@ import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/utils/size_config.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
-import 'package:myfinance/view/pages/bottomnavbar.dart';
+import 'package:myfinance/view/pages/ViewCreatedAccount.dart';
+import 'package:myfinance/view/pages/createaccount.dart';
+import 'package:myfinance/view/pages/yourprofile.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});
@@ -59,9 +61,16 @@ class _DataPageState extends State<DataPage> {
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.deepPurple,
-            leading: Icon(
-              Icons.more_vert,
-              color: Colors.white,
+            leading: Builder(
+              builder: (context) => IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
             ),
             title: Center(
               child: Text(
@@ -82,10 +91,61 @@ class _DataPageState extends State<DataPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => Bottomnavbar()));
+                          builder: (BuildContext context) => YourProfile()));
                 },
               )
             ],
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple,
+                  ),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Text(
+                          '       My Finance',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/logo.png',
+                          scale: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.add),
+                  title: Text('Create Account'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                CreateAccount()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.view_array),
+                  title: Text('View Created Account'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ViewCreatedAccount()));
+                  },
+                ),
+              ],
+            ),
           ),
           backgroundColor: Colors.white,
           body: Padding(

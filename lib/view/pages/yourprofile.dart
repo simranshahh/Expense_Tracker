@@ -40,13 +40,8 @@ class _YourProfileState extends State<YourProfile> {
     udata = handler.getUsers();
 
     handler.initDB().whenComplete(() {
-      udata = gettData();
       _loadProfilePicture();
     });
-  }
-
-  Future<List<Users>> gettData() {
-    return handler.getUsers();
   }
 
   Future<void> _loadUserCredentials() async {
@@ -134,7 +129,7 @@ class _YourProfileState extends State<YourProfile> {
       String name, String address, String phone, String password) async {
     if (currentUser != null) {
       await handler.updateDetails(
-          name, address, phone, currentUser!.usrId.toString(), password);
+          name, address, phone, password, currentUser!.usrId.toString());
       final updatedUser =
           await handler.getUserById(currentUser!.usrId.toString().length);
       setState(() {
@@ -194,8 +189,8 @@ class _YourProfileState extends State<YourProfile> {
                       currentUser!.usrName,
                       currentUser!.usrAddress ?? '',
                       currentUser!.usrPhone ?? '',
-                      currentUser!.usrId.toString(),
                       newPassword,
+                      currentUser!.usrId.toString(),
                     );
 
                     await storage.write(key: 'usrPassword', value: newPassword);
@@ -214,9 +209,6 @@ class _YourProfileState extends State<YourProfile> {
                     });
 
                     Navigator.of(context).pop();
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => LoginScreen()));
-
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (BuildContext context) => LoginScreen()));
                   } else {
@@ -239,6 +231,7 @@ class _YourProfileState extends State<YourProfile> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: ColorConstant.primary,
         body: FutureBuilder<List<Users>>(
           future: udata,

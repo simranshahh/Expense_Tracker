@@ -143,10 +143,11 @@ class DatabaseHelper {
     return await dbClient.insert('picture_Table', profilePicture.toMap());
   }
 
-  Future<ProfilepictureModel?> getProfilePicture(String photoId) async {
+  Future<ProfilepictureModel?> getProfilePicture(String usrId) async {
     var dbClient = await initDB();
+
     var result = await dbClient
-        .query('picture_Table', where: 'photoId = ?', whereArgs: [photoId]);
+        .query('picture_Table', where: 'photoId = ?', whereArgs: [usrId]);
     if (result.isNotEmpty) {
       return ProfilepictureModel.fromMap(result.first);
     }
