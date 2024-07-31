@@ -87,143 +87,143 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                height: displayHeight(context),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 15,
-                      offset: Offset(0, 20),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+              height: displayHeight(context),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 15,
+                    offset: Offset(0, 20),
+                  ),
+                ],
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/bg.png",
+                      width: displayWidth(context),
+                      height: displayHeight(context) * 0.32,
+                    ),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                      controller: username,
+                      hintText: "Username",
+                      icon: Icons.person,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Username is required";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTextField(
+                      controller: password,
+                      hintText: "Password",
+                      icon: Icons.lock,
+                      obscureText: !isVisible,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isVisible = !isVisible;
+                          });
+                        },
+                        icon: Icon(isVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Password is required";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(height: 20),
+                    isLoading
+                        ? CircularProgressIndicator(
+                            value: 3.0,
+                            color: Colors.deepPurple,
+                          )
+                        : _buildButton(
+                            text: "LOGIN",
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                login();
+                              }
+                            },
+                          ),
+                    if (isLoginTrue)
+                      AnimatedOpacity(
+                        opacity: isLoginTrue ? 1.0 : 0.0,
+                        duration: Duration(milliseconds: 300),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Username or password is incorrect",
+                            style: TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUp(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "SIGN UP",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/bg.png",
-                        width: displayWidth(context),
-                        height: displayHeight(context) * 0.32,
-                      ),
-                      const SizedBox(height: 20),
-                      _buildTextField(
-                        controller: username,
-                        hintText: "Username",
-                        icon: Icons.person,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Username is required";
-                          }
-                          return null;
-                        },
-                        textInputAction: TextInputAction.next,
-                      ),
-                      const SizedBox(height: 15),
-                      _buildTextField(
-                        controller: password,
-                        hintText: "Password",
-                        icon: Icons.lock,
-                        obscureText: !isVisible,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isVisible = !isVisible;
-                            });
-                          },
-                          icon: Icon(isVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Password is required";
-                          }
-                          return null;
-                        },
-                        textInputAction: TextInputAction.done,
-                      ),
-                      const SizedBox(height: 20),
-                      isLoading
-                          ? CircularProgressIndicator()
-                          : _buildButton(
-                              text: "LOGIN",
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  login();
-                                }
-                              },
-                            ),
-                      if (isLoginTrue)
-                        AnimatedOpacity(
-                          opacity: isLoginTrue ? 1.0 : 0.0,
-                          duration: Duration(milliseconds: 300),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Username or password is incorrect",
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Don't have an account?"),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignUp(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "SIGN UP",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 50.0),
-                  child: Text(
-                    'MyFinance',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30),
-                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: Text(
+                  'MyFinance',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
                 ),
-                Image.asset(
-                  'assets/ic_launcher.png',
-                  scale: 3,
-                )
-              ],
-            ),
-          ],
-        ),
+              ),
+              Image.asset(
+                'assets/ic_launcher.png',
+                scale: 3,
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

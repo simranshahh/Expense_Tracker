@@ -229,226 +229,224 @@ class _YourProfileState extends State<YourProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: ColorConstant.primary,
-        body: FutureBuilder<List<Users>>(
-          future: udata,
-          builder: (BuildContext context, AsyncSnapshot<List<Users>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return Center(child: Text("No data"));
-            } else if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()));
-            } else {
-              return Stack(
-                children: [
-                  Container(
-                    color: Colors.deepPurple,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      Bottomnavbar()),
-                            );
-                          },
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: ColorConstant.white,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Confirm Exit'),
-                                  content: Text('Do you want to exit?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('No'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await storage.deleteAll();
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  LoginScreen()),
-                                        );
-                                      },
-                                      child: Text('Yes'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          icon: Icon(
-                            Icons.exit_to_app,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 118.0),
-                    child: Container(
-                      height: displayHeight(context),
-                      decoration: BoxDecoration(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: ColorConstant.primary,
+      body: FutureBuilder<List<Users>>(
+        future: udata,
+        builder: (BuildContext context, AsyncSnapshot<List<Users>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+            return Center(child: Text("No data"));
+          } else if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          } else {
+            return Stack(
+              children: [
+                Container(
+                  color: Colors.deepPurple,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Bottomnavbar()),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
                           color: ColorConstant.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(45),
-                            topRight: Radius.circular(45),
-                          )),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 60),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: _imageBytes != null
-                                      ? ClipOval(
-                                          child: Image.memory(
-                                            _imageBytes!,
-                                            fit: BoxFit.cover,
-                                            width: 100,
-                                            height: 100,
-                                          ),
-                                        )
-                                      : Icon(
-                                          Icons.person,
-                                          size: 50,
-                                          color: Colors.white,
-                                        ),
-                                ),
-                                SizedBox(height: 8),
-                                TextButton(
-                                  onPressed: _pickAndInsertImage,
-                                  child: Text(
-                                    'Change Photo',
-                                    style: TextStyle(color: Colors.deepPurple),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Column(
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Confirm Exit'),
+                                content: Text('Do you want to exit?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await storage.deleteAll();
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                LoginScreen()),
+                                      );
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(
+                          Icons.exit_to_app,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 128.0),
+                  child: Container(
+                    height: displayHeight(context),
+                    decoration: BoxDecoration(
+                        color: ColorConstant.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(45),
+                          topRight: Radius.circular(45),
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 70),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
                             children: [
-                              ListTile(
-                                title: Text('Username'),
-                                subtitle: Text(currentUser?.usrName ?? ''),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    _showEditDialog(
-                                      'Username',
-                                      currentUser?.usrName ?? '',
-                                      (value) async {
-                                        await _updateUserInfo(
-                                          value,
-                                          currentUser?.usrAddress ?? '',
-                                          currentUser?.usrPhone ?? '',
-                                          currentUser?.usrPassword ?? '',
-                                        );
-                                      },
-                                    );
-                                  },
+                              Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  shape: BoxShape.circle,
                                 ),
+                                child: _imageBytes != null
+                                    ? ClipOval(
+                                        child: Image.memory(
+                                          _imageBytes!,
+                                          fit: BoxFit.cover,
+                                          width: 100,
+                                          height: 100,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.person,
+                                        size: 50,
+                                        color: Colors.white,
+                                      ),
                               ),
-                              ListTile(
-                                title: Text('Address'),
-                                subtitle: Text(currentUser?.usrAddress ?? ''),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    _showEditDialog(
-                                      'Address',
-                                      currentUser?.usrAddress ?? '',
-                                      (value) async {
-                                        await _updateUserInfo(
-                                          currentUser?.usrName ?? '',
-                                          value,
-                                          currentUser?.usrPhone ?? '',
-                                          currentUser?.usrPassword ?? '',
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              ListTile(
-                                title: Text('Phone'),
-                                subtitle: Text(currentUser?.usrPhone ?? ''),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    _showEditDialog(
-                                      'Phone',
-                                      currentUser?.usrPhone ?? '',
-                                      (value) async {
-                                        await _updateUserInfo(
-                                          currentUser?.usrName ?? '',
-                                          currentUser?.usrAddress ?? '',
-                                          value,
-                                          currentUser?.usrPassword ?? '',
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              ListTile(
-                                title: Text('Password'),
-                                subtitle: Text('******'),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: _changePassword,
+                              SizedBox(height: 8),
+                              TextButton(
+                                onPressed: _pickAndInsertImage,
+                                child: Text(
+                                  'Change Photo',
+                                  style: TextStyle(color: Colors.deepPurple),
                                 ),
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text('Username'),
+                              subtitle: Text(currentUser?.usrName ?? ''),
+                              trailing: IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditDialog(
+                                    'Username',
+                                    currentUser?.usrName ?? '',
+                                    (value) async {
+                                      await _updateUserInfo(
+                                        value,
+                                        currentUser?.usrAddress ?? '',
+                                        currentUser?.usrPhone ?? '',
+                                        currentUser?.usrPassword ?? '',
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              title: Text('Address'),
+                              subtitle: Text(currentUser?.usrAddress ?? ''),
+                              trailing: IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditDialog(
+                                    'Address',
+                                    currentUser?.usrAddress ?? '',
+                                    (value) async {
+                                      await _updateUserInfo(
+                                        currentUser?.usrName ?? '',
+                                        value,
+                                        currentUser?.usrPhone ?? '',
+                                        currentUser?.usrPassword ?? '',
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              title: Text('Phone'),
+                              subtitle: Text(currentUser?.usrPhone ?? ''),
+                              trailing: IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditDialog(
+                                    'Phone',
+                                    currentUser?.usrPhone ?? '',
+                                    (value) async {
+                                      await _updateUserInfo(
+                                        currentUser?.usrName ?? '',
+                                        currentUser?.usrAddress ?? '',
+                                        value,
+                                        currentUser?.usrPassword ?? '',
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              title: Text('Password'),
+                              subtitle: Text('******'),
+                              trailing: IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: _changePassword,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            }
-          },
-        ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

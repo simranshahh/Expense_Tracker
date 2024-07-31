@@ -134,7 +134,10 @@ class DatabaseHelper {
 //get account
   Future<List<CreateAccountModel>> getaccount() async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.query('auto_account');
+    List<Map<String, Object?>> result = await db.query('auto_account'
+        // where: 'user_id = ?',
+        // whereArgs: [userId],
+        );
     return result.map((e) => CreateAccountModel.fromMap(e)).toList();
   }
 

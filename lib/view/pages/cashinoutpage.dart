@@ -45,74 +45,72 @@ class _CashInOrOutState extends State<CashInOrOut> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            widget.isCashIn ? 'Add Cash In' : 'Add Cash Out',
-            style: TextStyle(color: Colors.white),
-          ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildDropdownField(
-                    label: 'From       ',
-                    controller: _fromController,
-                    options: _fromDropdown,
-                  ),
-                  _buildDropdownField(
-                    label: 'To           ',
-                    controller: _toController,
-                    options: _toDropdown,
-                  ),
-                  _buildTextField(
-                    label: 'Amount  ',
-                    controller: _amountController,
-                    prefixText: widget.isCashIn ? '+' : '-',
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Amount is required';
-                      }
-                      if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
-                      }
-                      return null;
-                    },
-                  ),
-                  _buildTextField(
-                    label: 'Remarks',
-                    controller: _remarksController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Remarks are required';
-                      }
-                      return null;
-                    },
-                    keyboardType: TextInputType.text,
-                    prefixText: '',
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _handleSubmit,
-                    child: Text('Submit'),
-                  ),
-                ],
-              ),
+        title: Text(
+          widget.isCashIn ? 'Add Cash In' : 'Add Cash Out',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildDropdownField(
+                  label: 'From       ',
+                  controller: _fromController,
+                  options: _fromDropdown,
+                ),
+                _buildDropdownField(
+                  label: 'To           ',
+                  controller: _toController,
+                  options: _toDropdown,
+                ),
+                _buildTextField(
+                  label: 'Amount  ',
+                  controller: _amountController,
+                  prefixText: widget.isCashIn ? '+' : '-',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Amount is required';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    return null;
+                  },
+                ),
+                _buildTextField(
+                  label: 'Remarks',
+                  controller: _remarksController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Remarks are required';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.text,
+                  prefixText: '',
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _handleSubmit,
+                  child: Text('Submit'),
+                ),
+              ],
             ),
           ),
         ),
