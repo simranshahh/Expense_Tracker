@@ -156,9 +156,9 @@ class _CreateAccountState extends State<CreateAccount> {
 
                             int result = await db.accountcreate(
                               CreateAccountModel(
-                                userId: currentUser!.usrId
-                                    .toString()
-                                    .length, // Use current user's ID
+                                userId:int.parse(currentUser!.usrId
+                                    .toString())
+                                    , // Use current user's ID
                                 accountName: accountname.text,
                                 accountAddress: accountaddress.text,
                                 accountPhone: accountphone.text,
