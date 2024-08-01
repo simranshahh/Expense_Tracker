@@ -29,7 +29,7 @@ class _DataPageState extends State<DataPage> {
   void initState() {
     super.initState();
     handler = DatabaseHelper();
-    tData = handler.gettransaction();
+    tData = handler.gettransaction(currentUser?.usrId);
     totalExpenses = handler.getTotalExpenses();
 
     handler.initDB().whenComplete(() {
@@ -48,7 +48,7 @@ class _DataPageState extends State<DataPage> {
   }
 
   Future<List<TransactionModel>> gettData() {
-    return handler.gettransaction();
+    return handler.gettransaction(currentUser?.usrId);
   }
 
   Future<List<Users>> getusertData() {
