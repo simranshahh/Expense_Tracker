@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
+import 'package:myfinance/view/JsonModels/users.dart';
+import 'package:flutter/foundation.dart';
 
 class DataTables extends StatefulWidget {
   final String category;
@@ -13,19 +15,42 @@ class DataTables extends StatefulWidget {
   @override
   State<DataTables> createState() => _DataTablesState();
 }
-
+  
 class _DataTablesState extends State<DataTables> {
+  final db = DatabaseHelper();
   late DatabaseHelper handler;
   late Future<List<CreateAccountModel>> accountData;
   late Future<List<TransactionModel>> transactionData;
-
+   Users? currentUser;
   @override
   void initState() {
     super.initState();
+    _fetchCurrentUser();
     handler = DatabaseHelper();
     accountData = handler.getAccountsByCategory(widget.category);
-    transactionData = handler.gettransaction();
+    transactionData = handler.gettransaction(currentUser?.usrId);
   }
+
+    Future<void> _fetchCurrentUser() async {
+    try {
+      currentUser = await db.getCurrentUser();
+      if (currentUser == null) {
+        if (kDebugMode) {
+          print("No current user found.");
+        }
+      } else {
+        if (kDebugMode) {
+          print("Current User ID: ${currentUser!.usrId}");
+        }
+      }
+      setState(() {}); // Refresh the UI after fetching the user
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching current user: $e");
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

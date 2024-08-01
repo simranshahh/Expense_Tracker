@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
 import 'package:myfinance/view/JsonModels/createaccount.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
+import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:myfinance/view/pages/bottomnavbar.dart';
 
 class CashInOrOut extends StatefulWidget {
@@ -23,6 +24,7 @@ class _CashInOrOutState extends State<CashInOrOut> {
   final TextEditingController _remarksController = TextEditingController();
   late DatabaseHelper _dbHelper;
   late Future<List<CreateAccountModel>> _accountsFuture;
+  Users? currentUser;
 
   List<String> _fromDropdown = [];
   List<String> _toDropdown = [];
@@ -256,6 +258,7 @@ class _CashInOrOutState extends State<CashInOrOut> {
           widget.isCashIn ? parsedAmount.round() : (-parsedAmount).round();
 
       final transaction = TransactionModel(
+        userId: currentUser!.usrId.toString().length,
         fromid: _fromController.text.toString().length,
         toid: _toController.text,
         amount: amount,
