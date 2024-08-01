@@ -7,11 +7,8 @@ import 'package:myfinance/view/JsonModels/profilepicturemodel.dart';
 import 'package:myfinance/view/JsonModels/transactionmodel.dart';
 import 'package:myfinance/view/JsonModels/users.dart';
 import 'package:path/path.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:flutter_file_manager/file_manager.dart';
 
 class DatabaseHelper {
   final databaseName = "myfin.db";
@@ -28,6 +25,17 @@ class DatabaseHelper {
   String transactionTable =
       "create table auto_transaction (id INTEGER PRIMARY KEY AUTOINCREMENT, from_id INTEGER, to_id INTEGER, amount NUMERIC DECIMAL(10,3), remarks TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, CONSTRAINT from_id_account_fkey FOREIGN KEY (from_id) REFERENCES auto_account(account_id),  CONSTRAINT to_id_account_fkey FOREIGN KEY (to_id) REFERENCES auto_account(account_id))";
 
+  String transactiontables = "create table autotransaction ("
+      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+      "user_id INTEGER, " // Reference to users table
+      "from_id INTEGER, "
+      "to_id INTEGER, "
+      "amount DECIMAL(10,3), "
+      "remarks TEXT, "
+      "created_at TEXT DEFAULT CURRENT_TIMESTAMP, "
+      "FOREIGN KEY (user_id) REFERENCES users(usrId), " // Foreign key constraint for user_id
+      "FOREIGN KEY (from_id) REFERENCES auto_account(account_id), "
+      "FOREIGN KEY (to_id) REFERENCES auto_account(account_id))";
   String pictureTable =
       "create table picture_Table (photoId INTEGER PRIMARY KEY, pImage BLOB)";
 
@@ -51,6 +59,7 @@ class DatabaseHelper {
       await db.execute(createaccount);
       await db.execute(transactionTable);
       await db.execute(pictureTable);
+      await db.execute(transactiontables);
     });
   }
 
@@ -128,7 +137,11 @@ class DatabaseHelper {
   Future<int> accountcreate(CreateAccountModel account,
       {String? accountName}) async {
     final Database db = await initDB();
-    return db.insert('auto_account', account.toMap());
+    return db.insert(
+      'auto_account',
+      account.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
 //get account
@@ -163,7 +176,7 @@ class DatabaseHelper {
   ) async {
     final Database db = await initDB();
     return db.insert(
-      'auto_transaction',
+      'autotransaction',
       transaction.toMap(),
     );
   }
@@ -171,7 +184,7 @@ class DatabaseHelper {
   //get transaction
   Future<List<TransactionModel>> gettransaction() async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.query('auto_transaction');
+    List<Map<String, Object?>> result = await db.query('autotransaction');
     return result.map((e) => TransactionModel.fromMap(e)).toList();
   }
   //get users
@@ -200,14 +213,25 @@ class DatabaseHelper {
     );
 
     return List.generate(maps.length, (i) {
-      return CreateAccountModel.fromMap(maps[i]);
+      return CreateAccountModel(
+        accountId: maps[i]['account_id'],
+        userId: maps[i]['user_id'],
+
+        accountName: maps[i]['account_name'],
+        accountAddress: maps[i]['account_address'],
+
+        accountPhone: maps[i]['account_phone'],
+        accountCategory: maps[i]['account_category'],
+        // Initialize other fields as needed...
+      );
+      ;
     });
   }
 
   Future<Object> getTotalExpenses() async {
     final Database db = await initDB();
     var result =
-        await db.rawQuery("SELECT SUM(amount) as total FROM auto_transaction");
+        await db.rawQuery("SELECT SUM(amount) as total FROM autotransaction");
     if (result.isNotEmpty) {
       return result.first["total"] ?? 0;
     }

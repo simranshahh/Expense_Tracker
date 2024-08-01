@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, use_build_context_synchronously
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance/SQLite/sqlite.dart';
@@ -13,8 +11,6 @@ class CreateAccount extends StatefulWidget {
 
   @override
   State<CreateAccount> createState() => _CreateAccountState();
-
-  static fromMap(Map<String, Object?> e) {}
 }
 
 class _CreateAccountState extends State<CreateAccount> {
@@ -25,8 +21,6 @@ class _CreateAccountState extends State<CreateAccount> {
   TextEditingController accountcategory = TextEditingController();
 
   Users? currentUser;
-  int? expenseNumber;
-
   final items = ["Debitor", "Creditor", "Income", "Expenses", "Cash Back"];
   final formKey = GlobalKey<FormState>();
 
@@ -137,28 +131,15 @@ class _CreateAccountState extends State<CreateAccount> {
                       if (formKey.currentState!.validate()) {
                         if (currentUser != null) {
                           try {
+                            final userId = currentUser!.usrId;
                             if (kDebugMode) {
-                              print("Current User ID: ${currentUser!.usrId}");
+                              print("Current User ID: $userId");
                             }
-                            if (kDebugMode) {
-                              print("Account Name: ${accountname.text}");
-                            }
-                            if (kDebugMode) {
-                              print("Account Address: ${accountaddress.text}");
-                            }
-                            if (kDebugMode) {
-                              print("Account Phone: ${accountphone.text}");
-                            }
-                            if (kDebugMode) {
-                              print(
-                                  "Account Category: ${accountcategory.text}");
-                            }
-
                             int result = await db.accountcreate(
                               CreateAccountModel(
-                                userId: currentUser!.usrId
+                                userId: userId
                                     .toString()
-                                    .length, // Use current user's ID
+                                    .length, // Ensure it's a non-nullable int
                                 accountName: accountname.text,
                                 accountAddress: accountaddress.text,
                                 accountPhone: accountphone.text,
@@ -293,7 +274,6 @@ class _CreateAccountState extends State<CreateAccount> {
                 onSelected: (String value) {
                   setState(() {
                     accountcategory.text = value;
-                    expenseNumber = items.indexOf(value) + 1;
                   });
                 },
                 itemBuilder: (BuildContext context) {

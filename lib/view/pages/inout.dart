@@ -41,7 +41,7 @@ class _INOUTState extends State<INOUT> {
           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12),
           child: Column(
             children: [
-              SizedBox(height: 20), // Space at the top
+              SizedBox(height: 20),
               _buildOptionTile(
                 title: 'CASH IN',
                 onTap: () {
@@ -53,7 +53,7 @@ class _INOUTState extends State<INOUT> {
                 },
                 icon: Icons.arrow_forward,
               ),
-              SizedBox(height: 10), // Space between tiles
+              SizedBox(height: 10),
               _buildOptionTile(
                 title: 'CASH OUT',
                 onTap: () {

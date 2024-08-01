@@ -45,13 +45,15 @@ class _ViewCreatedAccountState extends State<ViewCreatedAccount> {
   Future<List<CreateAccountModel>> _fetchAccounts() async {
     if (_selectedCategory != null && currentUser != null) {
       return handler.getAccountsByCategoryAndUser(
-          _selectedCategory!, currentUser!.usrId.toString().length);
+          _selectedCategory!, currentUser!.usrId!);
     }
     return [];
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
